@@ -1,0 +1,42 @@
+Docker - Debian - cgroup / namespace
+
+RabbitMQ - 消息服务 - Ruby
+ElasticSearch / Solr - 搜索引擎 - Java
+
+虚拟机 - 屏蔽软硬件环境的差异 - VMWare / Virtual Box
+重量级容器（占用的系统资源多）
+
+Nginx / MySQL / Redis / RabbitMQ
+
+1.安装Docker
+yum -y install docker-io
+
+2.启动Docker服务
+systemctl start docker
+
+3.查看和下载镜像（安装盘）
+docker images
+docker pull 镜像名：版本号
+
+4.创建并运行容器（每个容器就相当于是一个轻量级的虚拟机）
+docker run -d -p 外部端口：内部端口 --name 名字 镜像：版本号
+
+5.查看运行中的容器
+docker ps
+
+6.查看所有容器
+docker container ls -a
+
+7.启动和停止容器
+docker start 容器名字
+docker stop 容器名字
+
+Redis - 基于内存的KV数据库 LLOOGG.com
+Redis提供了两种持久化方法：
+	- RDB - 内存中的数据放入一个二进制的dump文件中
+	- AOF - 用一个文件记录用户操作的命令
+
+docker run -d -p 6379:6379 --name redis-master redis redis-server --appendonly yes --reqirepass
+ 5335915
+
+docker run -d --name redis-slave-1 redis redis-server --link redis-master:redis-master --slaveof 6379 --masterauth 5335915 

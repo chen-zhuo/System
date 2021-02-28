@@ -1,0 +1,25 @@
+通过包管理工具安装Docker：yum install docker-io 
+
+启动Docker服务：systemctl start docker
+
+下载镜像：docker pull nginx
+
+查看镜像：docker images
+
+删除指定镜像：docker rmi nginx
+
+通过镜像创建容器：docker run -d -p 80:80 --name nginx nginx:latest
+
+查看正在运行的容器：docker ps
+
+查看所有的容器：docker container ls -a
+
+删除容器：docker rm -f nginx
+
+清空所有容器：docker container prune
+
+停止容器：docker stop nginx
+
+启动容器：docker start nginx
+
+进入容器：docker exec -it nginx /bin/bash 

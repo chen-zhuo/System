@@ -261,6 +261,1196 @@ ssh也是linux的一个指令，通过ssh可以实现linux1登录linux2。
 打开Xshell——文件——新建——名称（自定义）——协议（SSH）——主机（IP地址，虚拟机就是上面配置的IP地址，服务器就是他的公网IP地址）——端口号（22）——用户身份验证——方法（password）——用户名（登录Linux的名称）——密码（登录Linux的密码）——确定
 
 
+# Linux命令大全
+
+**注意：下面所有命令都是在登录Linux系统里面执行的，系统版本为CentOS。**
+
+**坑：要保证在英文模式下输入命令，而且尽量不要使用小键盘（数字键盘）。**
+
+### 快捷键
+
+```
+上键、下键 : 快速调出历史指令
+tab键 : 自动补全
+cd : 回到家目录
+clear : 清除屏幕
+ctrl + l : 清除屏幕
+ctrl + a : 移动到指令最前
+ctrl + e : 移动到指令最后
+ctrl + c : 终止当前的进程
+Ctrl + D : 退出当前终端，和exit一样。
+```
+
+### 用户系统
+
+##### 运行级别
+
+**系统运行级别就是系统使用的功能。**
+
+```
+cat /etc/inittab : 在文件中修改系统默认运行级别
+id:3:initdefault : 3就代表系统的运行默认级别
+init 3 : 设置当前系统运行级别为3
+    # 0:关机（不能设为默认级别）
+    # 1:单用户（安全模式）
+    # 2:不完全多用户，不能用网络
+    # 3:多用户
+    # 4:未分配
+    # 5:图形界面
+    # 6:重启（不能设为默认级别）
+
+runlevel：查看系统当前运行级别
+```
+
+##### 基本信息
+
+```
+超级用户root进入Linux系统：
+[root@localhost ~]#
+root : 超级管理员，拥有至高无上的权限
+localhost : 主机名
+~ : 代表的是当前用户的家目录，也表示当前所在位置
+# : 代表的意思是超级管理员在执行指令
+
+普通用户bajie进入Linux系统:
+[bajie@localhost ~]$
+bajie : 用户名
+localhost : 主机名
+~ : 代表的是当前用户的家目录，也表示当前所在位置
+$ : 代表的是普通用户在执行指令
+```
+
+##### 管理用户
+
+**Linux是一个多用户系统，可以多用户登录**
+
+**坑：注意设置密码，不要使用小键盘。**
+
+**注意：普通用户只能更改自己的密码，管理员可以更改所有人的密码。**
+
+```
+# 查看用户
+whoami : 查询自己是谁
+who : 查看登录用户（tty本地终端，pts远程终端）
+w : 查看登录用户详细信息（IDLE：未操作时间，what：执行的操作）
+
+# 增加用户
+useradd sc：添加用户sc（-u UID：手工指定用户的UID号，-G 组名：指定用户的附加组，-g 组名：指定用户的初始组，-c "说明"：添加说明，\：命令太长换行，修改新添加的用户）
+passwd sc：超级用户给sc用户设置密码（添加了用户，就要马上设置密码，否则该用户是不完整的。passwd直接回车就是自己设置自己的密码（普通用户、超级用户都可以））
+
+# 锁定、解锁
+passwd -l sc : 锁定sc用户，不能登录（这是因为在加密文件的密码前加了！，导致密码失效）
+passwd -u sc : 解锁sc用户
+
+# 修改用户信息
+usermod : 修改用户信息（-u UID：手工指定用户的UID号，-G 组名：指定用户的附加组，-L：临时锁定用户，-U：解锁用户，修改已存在的用户）
+chage : 修改用户密码状态（-l：列出用户的详细密码状态，-I 天数：密码过后宽限天数，-E 日期：账号失效时间，-d：修改密码最后一次更改日期）
+chage -d 0 lamp : 将lamp用户的密码修改日期归0，用户一登陆就要修改密码
+
+# 删除用户
+userdel -r 用户名 : 删除用户（-r：删除用户的同时删除用户家目录）
+
+# 切换用户
+su - user1 : 切换到user1（-：切换用户时，连带用户的环境变量一起切换。命令env就可以查看用户的环境变量）（超级用户切换到普通用户不需要密码，反向切换就要密码，普通用户切换为普通用户要密码）
+
+# 历史信息
+last：列出登陆过和在线的用户信息及系统重启信息
+lastlog：查看所有用户是否登录的信息
+lastlog -u 502：只查看502用户是否的登录信息
+```
+
+##### 管理组
+
+**每个用户都有自己的所属组**
+
+```
+groupadd 组名 : 添加组
+groupmod 组名 : 修改组
+groupmod -n testrp group1 : 将组名group1改为testrp
+groupdel 组名 : 删除组（组中存在用户，若组是用户的初始组，则不能删除；若是附加组，就能删除）
+gpasswd 组名 : 组中添加或删除用户（-a 用户名：向组中添加用户，-d 用户名：在组中删除用户；这些都是附加用户）
+id user1：查询user1用户id和组id和在哪些组当中
+```
+
+##### 用户配置文件
+
+Linux中主要是通过用户配置文件按来查看和修改用户信息。
+
+```
+用户配置文件:/etc/passwd
+# 第一字段：用户名称（例：root、bin）
+# 第二字段：密码标志（x：用户存在密码（没有密码的用户只能本机登陆，不能远程登陆））
+# 第三字段：UID（0：超级用户，1-499：系统用户（伪用户，不能删除），500-65535：普通用户（将UID改为0，就能成为超级用户，改GID没有用））
+# 第四字段：GID（用户初始组ID）
+# 额外：初始组，用户登录就拥有这个组权限，用户创建就建立并属于同名的初始组，初始组只能有一个。
+	   附加组，用户可以加入多个其他的用户组，并拥有这些组的权限，附加组可以有多个。
+# 第五字段：用户说明
+# 第六字段：家目录（超级用户：/root/，普通用户：/home/用户名/）
+# 第七字段：登录之后的shell（shell是Linux的命令解释器）
+
+例子：root:x:0:0:root:/root:/bin/bash（超级用户）
+例子：ntp:x:38:38::/etc.ntp:sbin/nologin（伪用户，nologin禁止登录）
+例子：lampl:x:503:503::/home/lampl:bin/bash（普通用户，都是在bin/bash才能登陆执行权限，如果将bin/bash改为sbin/nologin就会禁止该用户登录）
+
+# 影子文件：/etc/shadow文件，用来存放加密的密码（只有root能查看）
+# 第一字段：用户名
+# 第二字段：加密密码（密码是!!或*代表没有密码，不能登陆）
+# 第三字段：密码最后一次修改日期（时间戳，1970年1月1号，一天加1）
+# 第四字段：两次密码的修改间隔时间（和第三字段比较）
+# 第五字段：密码有效期（和第三字段比较）
+# 第六字段：密码修改到期前的警告天数（和五字段相比）
+# 第七字段：密码过期的宽限天数（0：密码过期失效，-1：密码永不失效）
+# 第八字段：账号失效时间（账号有效期，过期失效，设置时间戳表示）
+# 第九字段：保留（暂时不用）
+# 时间戳换算为时间：date -d "1970-01-01 16076 days"
+# 时间换算为时间戳：echo $(($(date --date="2014/01/06" +%s)/86400+1))
+
+# 组信息文件：/etc/group（组影子文件：/etc/gshadow，保存组密码）
+# 第一字段：组名
+# 第二字段：组密码（x：存在组密码，一般不用）
+# 第三字段：GID（组的ID）
+# 第四字段：组中附加用户
+
+# 用户家目录
+# 超级用户：/root/，所有者和所属组都是root用户，权限是550
+# 普通用户：/home/用户名/，所有者和所属组都是此用户，权限是700（普通用户变为超级用户，家目录不会变）
+```
+
+### 权限命令
+
+##### 认识权限
+
+**权限是由9个字符组成，每3个字符组成一组，分别代表u（所有者）、g（所属组）、o（其他人）的权限。**
+
+**3个字符分别是r（读取权限）、w（写入权限）、x（执行权限），而且顺序只能是rwx，没有该项权限用 - 表示。**
+
+```
+r : 读取权限  查看文件内容  查看目录内容
+w : 写入权限  修改文件内容  在目录中创建、删除文件（重点）
+x : 执行权限  可以执行文件  可以进入目录
+
+# 用ls -l就可以查看到文件或文件夹的权限
+例：-rwxr-x-wx. 5 root root 4096 8月  31 2018 xuexi.log
+   - : 代表这是一个文件
+   rwx : 代表所有者拥有读、写、执行的权限
+   r-x : 代表所属组拥有读、执行的权限
+   -w- : 代表其他人拥有写的权限
+```
+
+##### 权限更改
+
+**注意：更改文件的权限只能是文件的所有者（文件创建者）或者是root（超级管理员）。**
+
+```
+chmod u+x Japan.list : 给Japan.list文件的u（所有者）增加x（执行）权限
+chmod g+w,o-r Japan.list : 给Japan.list文件的g（所属组）加w（写权限），给o（其他人）减r（读权限）
+chomd g=rwx Japan.list : 给Japan.list文件的g（所属组）设置rwx（所有权限）
+
+# 权限数字表示  r:4  w:2  x:1  rwxrw-r--:764
+chomd 764 Japan.list：就将文件改成了上面的权限
+chomd -R 777 /tmp/a：将a文件夹下文件及文件夹的权限全部改为777（所有权限）
+
+# 只有管理员可以改变文件的所有者，所有者必须是存在的用户
+chown root /tmp/a.file：将a文件的所有者改为root（不管是谁创建的）
+# 只有管理员可以改变文件的所属组，所有者必须是存在的所属组
+chgrp brother /tmp/a.file：将a文件的所属组更改为brother（不管是谁创建的）
+
+umask -S：显示创建文件夹的默认权限rwxr-xr-x
+```
+
+##### sudo权限
+
+```
+# 给普通用户赋予超级用户才能执行的命令权限，前提是要root修改sudo命令的配置文件，给出权利才能使用sudo
+sudo -l：查看能使用超级管理员才能执行的命令
+sudo 命令的绝对路径 命令：执行超级管理员才能执行的命令
+sudo /sbin/shtdown -r now：执行这条命令的前提是超级管理员给了这条命令的权限
+```
+
+##### ACL权限
+
+ACL权限用于身份不足的情况（即所有者、所属组、其他人，三种情况外）。相当于不给用户添加身份，直接给他权限。
+
+```
+df -h：查询系统分区状况
+
+dumpe2fs -h/dev/sda5：查询指定分区详细文件系统信息（sda5就是上面命令查询显示的root分区）（在当中查看Default mount options这行是否有acl，有就表明能开启ACL权限）
+
+mount -o remount,acl/：重新挂载根分区，并加入acl权限（临时挂载）
+
+vim /etc/fstab：修改配置文件（UUID=c2....../ ext4 defaults,acl 1 1）（加入acl,永久挂载）
+mount -o remount/：挂在后重启生效
+```
+
+##### chattr权限
+
+```
+chattr +i 文件或目录：改变文件或目录权限
+（+：增加权限，-：删除权限，=：等于某权限）
+（i：锁住文件，不能对文件删除、改名，也不能修改文件数据；如果是目录，只能修改目录下文件的数据，但不能建立和删除文件，root也会受到该限制。a：如果是文件，只能在文件中增加数据，但不能删除也不能修改数据；如果是目录，只能在目录中建立和修改文件，但不能删除）
+
+lsattr -a abc：查看abc文件属性（-a显示所有文件和目录，-d若目标是目录，列出目录本身的属性）
+```
+
+### 文件命令
+
+##### 查看、新建
+
+```
+ls : 显示当前目录里面的文件及文件夹
+ls 目录路径 : 显示路径中目录下的文件及文件夹（路径，绝对、相对都可以）
+ls -a : 显示当前目录里面所有文件，包含隐藏类型
+ls -l : 列表形式显示文件的详细信息
+	-rw-r--r--. 1 root root 3384 8月  28 2018 install.log.syslog
+	drwxr-xr-x. 5 root root 4096 8月  31 2018 ziliao1
+    第一列：类型，- : 文件，d : 目录，l : 链接，c : 字符设备，b : 块设备
+    第二列-第十列：文件权限
+    第十一列：没影响，不用管
+    第十二列：如果是文件，代表的是硬链接的个数
+    第十三列：所属用户   root
+    第十四列：所属组     root
+    第十五列：文件的大小  单位kb
+    第十六列-第十八列：文件创建、修改时间
+    第十九列：文件的名字
+touch /tmp/love.list：在tmp文件夹下创建love.list文件
+touch program files：在当前路径下创建文件program和文件files
+touch "program files"：在当前路径下创建文件program files（不建议文件命名包含空格）
+```
+
+##### 复制、搜索
+
+```
+cp /etc/1.conf /tmp : 将1.conf文件复制到tmp目录下（复制文件）
+cp /etc/1.conf /etc/2.conf /tmp : 将1.conf和2.conf文件复制到tmp目录下（复制文件）
+cp -p /etc/1.conf /tmp : 将1.conf文件复制到tmp目录下（复制文件，包括文件的所有属性）
+find / -name *init* : 根目录搜索名称中包含init的文件（*匹配任意字符，？匹配单个字符）
+find /etc -name init : 在etc文件夹下搜索名称为init的文件（区分大小写，参数是-iname不区分大小写）
+find / -size +204800 : 在根目录下搜索大于100MB的文件（+n：大于n，-n：小于n，n是数据块，大小为0.5kB）
+find / -size +163840 -a -size -204800 : 根目录下搜索大于80MB小于100MB的文件（-a两个条件同时满足，-o满足一个条件即可）
+find / -name init* -a -type f：根目录下所搜以init开头的文件（-type类型，f文件，d文件夹，l软链接文件，-inum根据i节点查找）
+find /home -user shen：在根目录下搜索所有者为shen的文件（-group根据所属组搜索）
+find /etc -cmin -5：在etc下搜索5分钟内被修改过的属性的文件和目录（-mmin文件内容）
+find . -name init -exec ls -l {} \.：当前目录搜索名称为init的文件并显示详细信息（-exec表示对搜索结果的操作，ls -l显示详细信息，{} \.是固定格式）
+
+# locate是在资料库中查找，但不能查找新建文件，因为新建文件还没有添加到资料库里面，要查找新建文件，必须输入先命令updatedb来更新资料库（tmp临时文件不在更新范围内），再进行查找就能查找到。
+locate init：查找名称为init的文件（精确查找，区分大小写，添加参数-i就不区分大小写）
+
+which ls：查找ls命令所在的目录
+whereis rm：查找rm命令所在目录和帮助文档（和which差不多）
+grep mysql /root/install.log：在install.log中查找含有mysql的内容（-i不区分大小写）
+grep -v ^# /etc/init：查看init文件中不是#开头的文代码行（^以什么开头，#表示注释行）
+```
+
+##### 删除
+
+```
+rm 1.conf : 删除1.conf文件（有提示）
+rm -f 1.conf : 强制删除1.conf文件（没有提示）
+rm -rf /* : 强制删除根目录下的所有文件（准备好跑路！！！）
+```
+
+### 文件内容命令
+
+##### 查看、查找
+
+```
+cat /etc/issue : 查看issue文件内容
+cat -n /etc/issue : 查看issue文件内容（附带行号）
+more /etc/issue : 分页显示文件内容（空格或F向下翻页，回车下翻一行，q退出）
+less /etc/issue : 分页显示文件内容（空格或F向下翻页，回车下翻一行，上下箭头上下翻一行，pageup向上翻页，q退出）
+head -n 7 /etc/issue : 查看issue文件的前面7行内容
+tail -n 7 /etc/issue : 查看issue文件的最后7行内容
+/page : 打开文件后，（斜杠）/page搜索含有page的内容
+```
+
+##### 文本编辑器vim
+
+ **Linux自带vi编辑器，vim是增强版的编辑器，但是需要安装才能使用。**
+
+```
+yum install vim
+```
+
+vim编辑器，有三种模式：
+
+**命令模式（vim init.txt：打开init.txt，就进入命令模式）**
+**编辑模式（命令模式下，按i键进入编辑模式，按ESC键，退出编辑模式，进入命令模式）**
+**底行模式（命令模式下，输入:（英文冒号）进入底行模式）**
+
+```
+    命令模式：a : 在光标所在字符的后一个字符进入编辑模式
+    		A : 在光标所在行末尾进入编辑模式
+    		i : 在光标所在处进入编辑模式
+    		I : 在当前行的第一个非空字符进入编辑模式
+    		o : 在光标下新建一行进入编辑模式
+    		O : 在光标所在行的上面新建一行进入编辑模式
+    		s : 删除当前字符进入编辑模式
+    		S : 删除当前行进入编辑模式
+    		gg : 快速切换到第一行的行首
+            G : 快速切换到最后一行的行首
+            ngg : 快速切换到指定行的行首
+            ^ : 快速切换到该行行首
+            $ : 快速切换到该行行尾
+            dd : 删除光标所在行
+            u : 撤销操作
+            ndd : 删除光标下n行，包含光标所在行
+            yy : 复制光标所在行
+            p : 粘贴复制的内容
+            np : 复制几次
+            nyy : 复制光标下n行，包含光标所在行
+            4dd : 删除和前切光标下面的4行
+		# 翻页
+            ctrl + f : 下一页  forward(pagedown键)
+            ctrl + b : 上一页  backward(pageup键)
+            ctrl + d : 下翻半页 down
+            ctrl + u : 上翻半页 up
+    底行模式：
+    	# 保存
+        	输入 :w：保存修改
+        	输入 :w /tmp/new_file：另存为tmp下的指定文件
+        	输入 :wq：保存并且退出
+        	输入 :wq!：强制保存并且退出（文件所有者和root能使用）
+        	输入 :q!：不保存，强制退出
+    	# 行号
+    		输入 :set nu：就会显示行号
+        	输入 :set nonu：取消显示行号
+        # 跳跃
+        	输入 :1000：快速跳到1000行
+        # 删除
+        	输入 :1000，1002d：删除1000行到1002行
+        # 查找
+        	输入 :/ftp：查找含有ftp的内容（按n查找下一个）
+        # 替换
+          光标所在行
+            输入 :s/孤单/幸福   将光标所在行的第一个孤单替换为幸福
+            输入 :s/孤单/幸福/g   将光标所在行的所有孤单替换为幸福
+          指定行
+            输入 :n,ms/孤单/幸福  将n到m行第一个孤单替换为幸福
+            输入 :n,ms/孤单/幸福/g  将n到m行所有孤单替换为幸福
+          所有行
+            输入 :%s/ftp/ym	将全文的第一个ftp替换为ym
+            输入 :%s/ftp/ym/g	将全文的ftp替换为ym
+```
+
+常见错误：非法编辑退出vi的时候，会产生一个 .文件名.后缀名.swp 的交换文件，只要有这个文件存在, 那么打开这个文件的时候就会有提示，不想要这个提示，删除这个文件即可。
+
+```
+rm -f .2.txt.swp
+vi -r 2.txt   恢复到上次编辑的内容
+```
+
+##### 复制、粘贴
+
+```
+vim init.log：打开文件init.log
+:r /etc/issue：将issue文件的内容，导入init.log文件中
+:r !date：将当前时间导入init.log文件中
+```
+
+### 文件夹命令
+
+##### 新建、重命名
+
+```
+mkdir /tmp/Japan : 创建一个名称为Japan的新文件夹（前提是tmp文件夹存在）
+mkdir -p /tmp/Japan : 创建一个名称为Japan的新文件夹（tmp文件夹可以不存在）
+mkdir /tmp/Japan /tmp/China : 同时创建名为Japan和China的文件夹（前提是tmp文件夹存在）
+mv Japan la : 将Japan更名为la（前提是在同一文件夹下，mv相当于在本文件夹内移动，顺便改名）
+```
+
+##### 复制、移动
+
+```
+cp -r /tmp/Japan /root : 将Japan目录复制到root目录下（复制目录）
+cp -r /tmp/Japan /root/shen : 将Japan目录复制到root目录下并更名为shen（复制目录）
+mv /tmp/Japan /root : 将Japan目录移动到root目录下（移动目录）
+mv /tmp/Japan /root/la : 将Japan目录移动到root目录下并更名为la（移动目录）
+```
+
+##### 删除
+
+```
+rmdir /tmp/Japan : 删除Japan目录（只能删除空目录）
+rm -r /tem/Japan : 删除Japan文件夹（会提示）
+rm -rf /tem/Japan : 强制删除Japan文件夹（没有提示）
+```
+
+### 网络命令
+
+##### 消息命令
+
+```
+write shen：给用户shen发送信息（前提shen是登录状态，ctrl+D保存结束并发送）
+wall hello：给所有在线用户发送一个内容为hello的信息。（广播信息）
+```
+
+##### 端口查看
+
+```
+netstat：显示网络相关信息（-l监听，-r路由，-n显示IP地址和端口号，-tuln查看监听端口，-an查看所有网络连接（ESTABL LSHED连接状态，发起端口随机，目标端口固定），-rn查看路由表）
+```
+
+##### 网络配置
+
+```
+ifconfig：查看和设置网卡信息（eth0第一网卡，eth1第二块网卡，lo回环网卡（虚拟））
+ifconfig eth0 192.168.8.250：设置虚拟网卡eth0的IP地址为192.168.8.250
+
+setup：设置IP地址（DHCP[*]自动配置IP地址，没有DHCP服务就去掉*，重启network服务生效（service network restart），永久生效）
+```
+
+##### 连接测试
+
+```
+ping 192.168.1.1：测试与192.168.1.1的IP地址是否网络相通（它会一直ping，ctrl+c停止）
+ping -c 4 192.168.1.1：给192.168.1.1的IP地址发送4个数据包
+```
+
+##### 挂载
+
+挂载就是给外接设备（U盘）分配一个盘符
+
+```
+mkdir /mnt/cdrom：新建一个cdrom文件夹（一般在mnt里面挂载）
+mount /dev/sr0 /mnt/cdrom：将设备sr0挂载到cdrom上（sr0默认挂载设备标识）
+umount /dev/sr0：取消挂载设备sr0（前提是不在cdrom挂载文件夹内）
+```
+
+### 软件包管理
+
+##### 软件包管理简介
+
+```
+源码包（c语言写的包，安装慢，效率高，指定位置安装（一般建议在/user/local/下））
+二进制包（RPM包、系统默认包（二进制内容），安装快，默认位置安装）
+```
+
+##### 依赖性
+
+```
+树形依赖：安装a，需要安装b，需要安装c
+环形依赖：安装a，需要安装b，需要安装c，需要安装a
+模块依赖：依赖查询网站www.rpmfind.net
+解决办法：Linux系统centOS，yum命令安装软件（yum会把依赖的包一并装上）
+```
+
+##### 安装、升级、卸载
+
+```
+# 没有安装的软件包时，使用包全名，而且要注意路径。如果已经安装软件包是，查询、卸载就不用写全名，使用包名就行。
+
+rpm -ivh 包全名：安装软件包（-i安装，-v显示详细信息，-h显示进度，存在依赖性的问题）
+
+rpm -Uvh 包全名（-U：升级）
+
+# 安装和卸载需要加包全名，其他只需要包名
+rpm -e 包名（-e：卸载，-q：查询是否安装，-qa：查询所有包，-qi：查询详细信息，-ql：查询包安装位置，-V：查询包文件是否被修改，不用写包全名）
+
+# 网络yum源
+vi /etc/yum.repos.d/CentOS-Base.repo：配置网络yum源（软件池）
+
+yum list：查询可用软件包
+
+yum search 关键字：查询服务器上和关键字相关的包
+
+yum -y install 包名：安装软件包（-y：自动回答yes，不存在依赖性的问题，全自动安装依赖包）
+
+yum -y update 包名：升级软件包（-y：自动回答yes，千万要加包名，否则会全部升级，包括内核升级，还会有连接不上等错误）
+
+yum -y remove 包名：卸载软件包（-y：自动回答yes，慎用！它会把依赖包也卸载，有可能导致系统错误）
+
+yum grouplist：列出所有可用的软件组列表
+
+yum grouplist 软件组名：安装指定软件组，组名可以由grouplist查出来（软件组名有空格，则加上引号）
+
+yum groupremove 软件组名：卸载指定软件组
+
+# 安装源码包
+# 1.安装C语言编译器（安装gcc）
+# 2.网站上，下载源码包http://mirror.bit.edu.cn/
+# 3.复制到Linux系统上
+# 4.tar -zxvf 包全名：解压安装包，生成软件文件夹
+# 5.进入软件文件夹（必须要进入cd）
+# 6../configure --prefix=/usr/local/软件名：软件配置与检查和（prefix）设置安装位置
+# 7.make：进行编译
+# 8.make install：编译安装
+/usr/local/软件名 start：启动该软件服务（指定安装路径启动）
+
+rm -rf /usr/local/软件包名：删除该软件包
+
+du -sh 文件夹：可以显示文件夹大小
+# 提醒：同一软件，安装了RPM包，还可以安装源码包，因为安装位置不一样，但启动只能启动一个，因为要占用相同的端口（一般不会装两种包）
+
+# 脚本安装包（自动化安装的源码包）
+# 1.webmin网页图形Linux管理界面
+# 2.网址：http://sourceforge.net/projects/webadmin/files/webmin/
+# 3.解压缩，进入压缩目录（tar -zxvf 包全名）
+# 4.执行安装脚本（Linux一般的执行脚本以.sh结尾，就直接./setup.sh就开始安装了）
+# 提醒：ctrl+退格键（backspace）删除已输入的字符
+```
+
+##### 压缩解压命令
+
+```
+zip init.zip init：将init文件压缩为init.zip（保留源文件，-r压缩目录）
+gzip init：压缩init文件，生成一个init.gz的压缩文件（不保存init文件）
+gzip Janpan.tar：压缩Janpan.tar就会生成Japan.tar.gz文件（Janpan.tar就不存在了）
+gunzip init.gz：解压缩文件init.gz
+
+tar -cvf Japan.tar Japan：将Japan目录打包压缩为Japan.tar(-c打包，v显示详细信息，f指定文件名，保留源文件及目录)
+tar -zcf Japan.tar.gz Japan：将Japan目录直接压缩打包为Japan.tar.gz（打包同时解压缩）
+tar -zxf Japan.tar.gz：将Japan.tar.gz解包解压缩（z解压缩，x解包）
+tar -cjf Japan.tar.bz2 Japan：压缩Japan生成Japan.tar.bz2文件
+tar -xjf Japan.tar.bz2：解压缩Japan.tar.bz2文件
+
+bzip2 -k init：压缩文件init，生成init.bz2（-k保留源文件）
+unzip init.zip：解压缩文件init.zip
+bunzip2 init.bz2：解压缩文件init.bz2
+```
+
+##### 服务命令
+
+```
+# 一般服务放在/etc/rc.d/init.d下
+/etc/rc.d/init.d/服务名 start：启动该服务（绝对路径启动）
+
+service 服务名 status : 查看项目状态
+service 服务名 start : 启动该项目（源码包安装的服务不能用，因为安装位置不同）
+service 服务名 restart : 重启该项目
+service 服务名 stop : 停止该项目
+```
+
+### 链接命令
+
+![软硬链接](F:\Project Notebook\Knowledge\Linux系统\Image\软硬链接.png)
+
+##### 硬链接
+
+```
+ln /etc/issue /tmp/study.hard：创建文件issue的硬链接study.hard
+    1. study.hard文件和issue文件，内容、大小、属性都一样
+    2. study.hard文件能和issue文件同步更新（修改文件任何内容，另一个文件都会更新）
+    3. 删除源文件，也能正常运行study.hard文件
+    4. 硬链接类似于拷贝
+    5. 硬链接文件和源文件i节点一样
+    6. 不能跨分区
+    7. 不能对目录使用
+```
+
+##### 软链接
+
+```
+ln -s /etc/issue /tmp/study.soft：创建文件issue的软链接study.soft
+    1. study.soft的作用类似于windows的快捷方式，运行study.soft文件就是运行issue文件。
+    2. study.soft文件的权限是三个rwx，但归根结底使用权限还是issue文件的权限
+    3. study.soft文件很小，它只是一个符号指向，文件详细信息后面有符号指向。
+    4. 删除源文件，运行study.soft文件会报错
+    5. 可以夸分区
+    6. 可以对目录使用
+```
+
+### 时间命令
+
+```
+date：获取时间
+date 031410272014.18：将时间更改为2014年03月14日 10：27：18
+```
+
+### 帮助命令
+
+```
+man ls：查看ls命令的帮助信息（空格或F向下翻页，回车下翻一行，q退出）
+man service：查看配置文件service的帮助信息（前面不要加路径）
+whatis ls：看ls命令的简要的帮助信息
+ls --help：获取ls命令的选项
+```
 
 
 
+2、文件相关指令
+    文件和文件夹的相关指令，创建、删除、拷贝、移动、查看
+    创建：
+        文件：  vi 文件路径      touch 文件路径
+        文件夹： mkdir 目录路径   创建指定的目录
+            mkdir -p dudu/haha/xixi   递归创建目录
+    删除
+        文件： rm 文件路径     rm -f 文件路径   强制删除
+        一般都不删除文件，一般都是备份一下，编辑新的文件
+        通配符：*
+        rm -f *.txt   删除所有txt文件
+        rm -f *       删除所有文件
+    
+
+        目录：rmdir 目录路径    只能删除空目录
+            rm -rf 目录路径    删除非空目录
+    拷贝
+        cp 源文件路径 目标文件路径
+            拷贝文件的时候可以修改名字
+        cp -r 源文件夹 目标文件夹
+            拷贝文件夹的时候可以修改
+            cp -r lihong jielun/       使用原来的名字
+            cp -r lihong jielun/hong   修改名字
+    移动
+        mv 源文件路径 目标文件路径
+            移动的时候可以修改文件名字
+            移动文件夹不用加 -r 参数
+    查看文件
+        vi就能查看
+        cat 文件名   
+            -n 显示行号
+        tac 文件名   倒着查看
+        head 文件名   默认查看文件前十行
+            -5  查看文件前五行  
+        tail 文件名   默认查看文件后十行
+            -5 查看文件后五行
+        more 文件名
+            enter ： 往下走一行
+            空格 ： 往下走一页
+            不能向上看，按q退出
+        less 文件名
+            enter ： 往下走一行
+            空格 ： 往下走一页
+            按q退出
+            pageup   上翻页
+            pagedown 下翻页
+            /要查找的字符     也可与查找
+4、用户和组
+    linux是一个多用户多组的操作系统
+    一个用户能否属于多个组  yes
+    一个组能否拥有多个用户  yes
+    一个用户至少必须属于一个组，一个用户必须拥有自己的主组，其他组称之为附加组
+    用户创建
+        useradd bajie
+        创建成功之后会留下记录，  tail /etc/passwd
+        创建一个用户的同时，会给当前用户创建一个名字一模一样的组作为该用户的主组
+        给用户添加密码
+            passwd 用户名
+            这个操作只能在root去给某个普通用户设置密码，在普通用户下只能给自己修改密码，不能设置其他普通用户密码
+        -d ： 创建用户的时候指定家目录，不指定会在home下面创建一个和用户名一模一样的目录，一般不指定
+        -g : 指定主组，如果不指定，默认创建一个和用户名一模一样的组作为主组
+        -G : 指定附加组
+        -u ：指定用户id    一般都不用
+    用户修改
+        usermod
+        -g : 修改主组
+            usermod -g 501 bajie   修改bajie主组
+        -l : 修改用户名
+            usermod -l wuneng bajie   将bajie用户名修改为wuneng
+        -u : 修改用户id
+            usermod -u 505 wuneng   将wuneng用户id修改为505
+        -d : 修改家目录
+            usermod -d /home/lala wuneng   不用
+    用户删除
+        userdel
+            userdel 用户名     只删除文件中的记录
+            userdel -r 用户名  将家目录一并删除
+            如果操作不规范，家目录也可手动干掉
+    用户切换
+        centos里面
+        su 用户名
+        从root切换到普通不用密码
+        从普通切换到root，需要输入root的密码，通过exit返回上一个用户
+        这里面不能sudo，因为不支持，如果要支持，需要相关配置
+    
+        Ubuntu里面
+        不允许root直接登录，需要配置才可以。
+        用普通用户登录。  sudo 指令，提示输入密码，这个密码是当前用户的密码
+    
+    组创建
+        查看当前组，  tail /etc/group
+        groupadd 组名
+        -g : 可以指定组id
+    删除组
+        groupdel 组名
+        【注】如果一个组是主组的话，这个组删不掉
+        【注】如果一个组是一个用户的主组，并且仅仅是这个用户的主组，而且组名和用户名相同，那么在删除用户的同时，该组也就删除了
+    修改组
+        groupmod
+        -g : 修改组的id号    groupmod -g 513 dudu
+        -n : 修改组名        groupmod -n xixi dudu
+5、文件权限
+    权限什么意思？系统中，文件的权限都有哪些？读、写、执行
+    读：read   r   写：write   w    执行：execute  x
+    如果写一个-代表没有这个权限
+    权限表示
+    rwx     111     7   
+    rw-     110     6
+    r-x     101     5
+    r--     100     4
+    -wx     011     3
+    -w-     010     2
+    --x     001     1
+    ---     000     0
+    
+    rwx             r-x             r-x
+    所属用户权限     组内用户权限     组外用户权限
+    权限表示法：0755   0777   0644
+    
+    修改权限修改组的指令不是乱用的，需要root用户的权限才能修改，Ubuntu下需要使用sudo，centos需要切换root执行
+    修改权限：chmod
+        格式  chmod 权限 文件路径
+        chmod 755 1.txt
+        chmod g+w,g-x 1.txt
+            u : 修改所属用户
+            g : 修改组内用户
+            o : 修改组外用户
+        目录权限修改
+            chmod 777 目录路径    只修改该目录的权限
+            chmod -R 777 目录路径   递归修改目录里面所有文件的权限
+    修改用户：chown
+        chown 用户名 文件路径         只修改用户名
+        chown 用户名:组名 文件路径     用户和组都修改
+        chown :组名 文件路径          只修改组名
+        chown -R 用户名:组名 目录路径             递归修改目录里面所有文件的用户和组
+    修改组：chgrp
+        chgrp 组名 文件路径
+        chgrp -R 组名 目录路径      递归修改
+    umask
+        是什么？
+        系统创建文件默认权限是  644
+        系统创建目录默认权限是  755
+        目录默认比文件多了一个可执行权限，对目录来说，可执行就是打开目录
+        umask就决定了文件和目录的默认权限
+            0777-0022 = 0755  这就是默认权限，文件都少可执行权限
+        指定umask进行修改，将umask指定为0011
+            0777-0011 = 0766(目录)  0666（文件）
+6、文件搜索
+    find
+    用法如下：
+    find   在哪找   怎么找   找什么
+    在哪找：就是一个路径，默认是当前路径
+    怎么找：按照名字、大小、用户，其实就是参数
+        -name : 按照名字找
+        -size : 按照大小找
+        -user : 按照用户找
+        -group : 按照组找
+        -maxdepth : 查找最大目录级别
+        -mindepth : 查找最小目录级别
+    找什么：1.mp3  *.txt
+    
+    find / -name dudu.py
+    find / -size 10k     等于10k的文件 
+                +10k     大于10k的文件
+                -10k     小于10k的文件
+    find / *.txt -user liuyan
+    find / -maxdepth 3 -mindepth 2 -name *.txt  找指定级别的文件
+
+day09-linux
+
+1、文件内容搜索
+    grep 内容 文件路径
+    参数：
+    -i ：忽略大小写
+    --color=auto : 颜色自动提示，将grep设置为默认颜色提示，其实就是可以给grep指令器别名
+        vi ~/.bashrc
+        添加一句  alias grep='grep --color=auto'
+        source ~/.bashrc
+    -n : 显示内容出现的行号
+    -l : 显示内容出现的文件名
+    -c : 显示出现该内容的次数
+    
+    也可以写正则表达式, 注意使用 -P
+        13838384380
+        \d{11}
+        ^1\d{10}    3456789
+        ^1[3-9]\d{9}
+    
+        test@qq.com   duduxixi@163.com  lalahehe@sina.cn
+        \w+@\w+\.(com|cn|net)
+    grep 王者荣耀 1.txt
+    grep 王者荣耀 *.txt
+    grep 王者荣耀 ~/.txt
+    grep -P '1[3-9]\d{9}' 3.txt 
+2、管道
+    格式： 指令1 | 指令2
+    指令1的输出作为指令2的输入，指令2的输出显示到屏幕中
+    常用的管道指令有：
+        ls -l /etc | less
+        ls -l /etc | head -5
+        ls -l /etc | tail -5
+        ls -l /etc | head -10 | tail -5
+        ls -l /etc | grep 找的内容
+    查看进程相关
+        ps -ef | grep ssh
+3、搭建主机信任
+    密码学的内容，加密-解密，用到一个东西  秘钥
+    加密-解密秘钥相同-对称加解密
+    加密-解密秘钥不相同-非对称加解密
+    一对儿秘钥：公钥和私钥
+    公钥：给你们，你们拿的都是公钥
+    私钥：我自己拥有，
+    公钥加密-私钥解密，私钥加密-公钥解密
+    实现免密码登录，linux1登录linux2，实现免密码登录
+    （1）在linux1上，生成公钥和私钥
+        ssh-keygen   一路敲enter即可
+    （2）来到生成秘钥的文件中
+        id_rsa : 私钥
+        id_rsa.pub : 公钥
+    （3）复制公钥
+    （4）来到linux2中
+        vi ~/.ssh/authorized_keys
+        将公钥粘贴进来即可
+    这样在通过linux1登录linux2的时候就实现了免密码登录
+6、scp
+    scp：基于ssh的cp，cp是实现本机之间来回拷贝，scp在两台linux之间进行拷贝
+    scp的用法：
+        scp 源路径 目标路径
+        scp 1.txt root@ip地址:路径
+        如果发送文件夹，需要添加 -r 选项
+    linux和linux之间使用scp进行互发，如果搭建了主机信任，不用输入密码
+    winscp，实现windows和linux之间使用scp进行互发
+        安装，使用即可，左边：windows目录，右边：linux目录，相互拖动即可
+4、重定向
+    标准输入（stdin, 键盘）、标准输出（stdout, 屏幕）
+    输出重定向：意思就是不输出到屏幕，输出到其他地方
+    ls -l > 1.txt      >作用：首先清空文件，然后写入文件
+    ls -l >> 1.txt     >>作用：追加内容
+    
+    错误重定向：指令有错，错误信息显示到哪里
+    ls /lala 2> 1.txt   将错误信息显示到指定文件中
+    ls /lala 2>> 1.txt  将错误信息追加到指定文件中
+5、挂载、磁盘相关指令
+    挂载：神马意思？看图形
+    将u盘和目录对应的过程就是挂载
+    （1）插上u盘
+        u盘只能让你的linux识别，如果是虚拟机，在虚拟机设置里面点击让虚拟机识别，
+    （2）linux识别成功之后，通过指令查看你的设备
+        fdisk -l
+        /dev/sda   就是linux系统的硬盘设备
+        如果有分区  /dev/sda1   /dev/sda2  xxx
+    
+        u盘设备往下走
+        /dev/sdb   就是你的u盘设备
+        如果有分区  /dev/sdb1   /dev/sdb2
+    
+        挂载u盘
+        mount -t  需要挂载的设备  挂载点
+            auto : 自动识别
+            vfat : fat32
+            ntfs-3g : ntfs格式   需要插件支持
+        -o iocharset=utf8  如果有中文，可以指定字符集
+        mount /dev/sdb1 /mnt/usb
+    
+        取消挂载，不能再挂载的目录中取消挂载
+        umount /dev/sdb1 /mnt/usb
+        umount /dev/sdb1
+        umount /mnt/usb
+        如果取消挂载时候显示该设备正在忙，需要输入指令把使用的进程给干掉，再取消挂载即可
+        fuser -m -k /mnt/usb
+    和磁盘相关的指令
+    df
+        显示当前可用的设备的使用情况
+        -h  人性化的显示大小
+    du
+        当前目录的使用情况
+        -h  人性化的方式显示大小
+    
+    配置开机挂载
+    vi /etc/fstab
+    添加一行信息
+    /dev/sdb1     /mnt/usb      vfat    defaults      0 0
+7、软硬链接
+    link，为了解决文件的共享问题，引入了链接机制。分为软链接和硬链接，以软链接使用居多
+    硬链接
+        ln 源文件 目标文件
+        也可以使用link
+        链接之后，目标文件和源文件内容相同，修改其中一个，另外一个也被修改
+        在ll之后，可以看见硬链接个数，增加
+        删除其中一个，另外一个不受影响
+        可以理解为，给一个文件起了一个外号、别名  
+        【注1】不能给目录创建
+        【注2】创建完硬链接之后，你的用户名和组信息不变
+    软链接
+        ln -s 源文件 目标文件
+        软链接创建之后，修改其中一个，另一个也修改
+        【注1】可以给目录创建
+        【注2】创建完之后，用户和组信息是创建时候的信息
+    软硬链接的不同之处
+        在linux里面，存放一个文件，由三部分组成，一个文件名，一个是文件索引（inode），一个是数据部分
+        见百鸟朝凤图
+8、压缩和解压（很常用）
+    在linux里面，常见压缩格式有两种，一种叫做gz，一种叫做bz2
+    gzip\gunzip(后缀名是.gz)
+        gzip 文件1 文件2
+        生成之后，源文件不在了，只有压缩文件，每一个都生成一个压缩文件
+        gunzip 文件
+        不能实现打包压缩，不能实现保留源文件
+    bzip2\bunzip2(后缀名是.bz2)
+        bzip2 文件1 文件2
+        每一个生成一个压缩文件
+        -k : 保留源文件
+        bunzip2 压缩文件1 压缩文件2
+    tar（可以实现压缩和解压，可以实现打包的功能）
+        如果打包压缩使用的gzip压缩的，那么后缀名  .tar.gz    .tgz
+        如果打包压缩使用的bzip2压缩的，那么后缀名  .tar.bz2   
+        常用的参数有：
+        -z : 使用gzip压缩
+        -j : 使用bzip2压缩
+        -f : 打包压缩的时候指定压缩后的文件名
+        -c : 打包文件
+        -x : 解压缩使用的
+        -v : 压缩和解压缩时候显示进度
+    
+    打包使用gzip压缩：
+        tar -zcvf 压缩后的名字.tar.gz 文件1 文件2 文件3
+    使用gzip解压缩
+        tar -zxvf 压缩包.tar.gz
+    打包使用bzip2压缩
+        tar -jcvf 压缩后的名字.tar.bz2 文件1 文件2 文件3
+    使用bzip2解压缩
+        tar -jxvf 压缩包.tar.bz2
+9、软件安装之yum安装
+    红帽系列软件安装使用  yum安装
+    大便系列软件安装使用  apt-get安装
+    去哪下载软件呢？yum源，这个源在哪呢？默认都有自己的源，但是这个源是在国外的。所以使用linux经常将源设置为国内源，阿里源、清华源、搜狐源、网易源、中科大源
+    如何配置为国内源？
+    打开阿里源，点击帮助
+    （1）mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
+    （2）下载对应的源配置文件
+    wget是一个专业的下载软件，但是需要安装
+    wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
+    或者
+    curl是自带的，不用安装
+    curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
+    （3）执行
+        如果是本地，需要网络，吃饭的时候执行，晚上执行，热点执行
+        yum clean all
+        yum make cache
+
+
+day10-linux
+
+1、软件安装
+    （1）yum安装（多）
+        yum install -y 包名   中间一路yes
+        yum remove -y 包名
+        可以只下载安装包，不安装
+        yum install -y --downloadonly --downloaddir=./ wget
+        下载就是.rpm的包。
+    （2）rpm安装
+        不论你用的是yum还是用的rpm安装，其实安装的都是rpm包。在linux里面，安装软件的时候，不仅仅是安装这么一个软件，与之对应的要按照很多的依赖软件
+        a ==》 b===》c==》d
+        如果使用rpm安装，你要知道软件依赖关系才能安装，但是使用yum的话，不用知道依赖关系，yum自动为你解决
+        比如  yum install -y --downloadonly --downloaddir=./ vim
+            包含vim的包以及vim依赖的包，全部下载下来之后，估计10个包，这10个都是rpm，请问先装哪个后装哪个。
+            yum install -y vim   依赖关系自动解决
+        -ivh ：安装     rpm -ivh 包.rpm
+        -e ：卸载       rpm -e wget
+        -ql : 列出包安装路径   rpm -ql wget
+        -qi : 列出指定包的详细信息  rpm -qi wget
+    （3）编译安装（多）
+        相对来说，编译安装是需要编译源码的，安装的软件更加适合你的电脑，你的软硬件环境，更加的稳定，相比较yum来说稳定
+        编译安装3个步骤：
+        （1）配置
+            ./configure --prefix=你安装路径 --以及其它参数
+        （2）编译
+            linux里面的软件都是使用c、c++写的，所以你得有编译器
+            gcc gcc-c++
+            yum install -y gcc gcc-c++
+            make 
+        （3）安装
+            make install
+        走完一步之后，可以执行一个指令  echo $?  ,如果返回0，代表上面指令执行成功，如果返回其它，说明执行失败
+        指令可以连写：   make && make install
+        安装ntfs-3g
+        安装python
+2、服务和进程相关指令
+    linux的启动等级，打开这个文件   vi /etc/inittab
+    0 : 关机等级
+    1 : 单用户模式
+    2 : 多用户的无网络模式
+    3 : 多用户模式，有网络
+    4 : 保留模式
+    5 : 界面模式
+    6 : 重启模式
+    
+    切换等级   init 0   init 1   init 6
+    查看当前等级  runlevel   who -r
+    whoami  : 我是谁，查看当前用户
+    
+    查看随开机启动的服务
+    chkconfig --list
+    赵灵儿
+    随开机启动的服务，我们给他们起了一个非常好听的名字，守护进程（daemon）
+    sshd   httpd   mysqld  其实就是一个随机开机启动的服务
+    
+    开启、关闭服务
+        要有控制开启、关闭服务的脚本，比如iptables（防火墙）
+        /etc/init.d/iptables start | stop | restart
+        /etc/init.d/network start | stop | restart
+        经常找脚本，太不方便了，将服务脚本放到  /etc/init.d ,如果支持服务模式，那么就可以使用如下指令开启和关闭
+        service iptables start | stop | restart
+        service network start | stop | restart
+    
+        一般情况，安装服务的时候，控制服务的脚本在安装包就有，但是有的没有，比如nginx没有
+        自己按照的服务，你就可以将脚本放到  /etc/init.d 里面，然后通过service控制它的开启和关闭  service nginx start
+    
+    自己按照的服务随开机启动
+        chkconfig nginx on   默认设置的等级为2345
+        chkconfig nginx off
+        还得给脚本权限，权限一般设置为755
+        通过chkconfig --list 查看有没有配置成功
+    
+    进程相关指令
+        top ： 实时查看系统的运行情况
+        w ：查看系统的当前用户的链接情况
+        free : -h  内存的使用情况
+        ps : 查看进程相关信息
+            ps -ef | grep ssh
+            ps aux | grep ssh
+        kill : 杀死一个进程
+            kill -9 进程id
+        netstat -lnp : 查看网络和端口使用情况
+            netstat -lnp | grep 80
+3、shell简介(了解一下)
+    shell编程   wget url    包.tar.gz
+    python break : 终止循环
+           continue : 结束当次循环，进入下一次循环
+4、ftp服务搭建
+    ftp是什么？文件传输协议，用在将本地文件上传到服务器
+5、nfs搭建
+    nfs是什么？可以实现linux之间的文件共享
+    nfs客户端还有服务端
+6、nginx服务搭建
+    nginx是什么? web服务器   apache打交道
+    nginx服务器的根目录（www）在   /usr/local/nginx/html
+    ip:端口     域名（jd.com   baidu.com   taobao.com   mi.com）  sb.com
+    DNS服务商，阿里云、腾讯云都有
+    
+    一个服务器是否能放多个网站呢？可以的，配置虚拟主机
+7、各系统指令区别总结
+    centos6.8
+    centos7.0
+    ubuntu16.04
+
+需要执行的下载指令有
+yum install -y gcc gcc-c++
+yum install -y zlib*
+yum install -y nfs-utils
+yum install -y gcc openssl-devel perl
+yum install -y gcc gcc-c++ autoconf automake zlib zlib-devel openssl openssl-devel pcre pcre-devel
+
+
+# Linux命令
+
+linux文件路径是以/（根）开头的树杈状文件系统
+
+### 包管理
+
+```
+# 安装安装包
+yum install (包名) 
+```
+
+```
+# 卸载软件
+yum remove (包名)
+```
+
+### 文件管理
+
+删除文件
+
+```
+rm -f name	强行删除当前文件夹下名为name的文件
+```
+
+删除文件
+
+```
+rm -rf name/  强行删除当前文件夹下名为name的文件夹，包括name文件夹里的所有内容
+```
+
+### 服务管理
+
+启动服务（以docker服务为例）
+
+```
+systemctl start docker.service
+```
+
+关闭服务
+
+```
+systemctl stop docker.service
+```
+
+重启服务
+
+```
+systemctl restart docker.service
+```
+
+显示服务状态
+
+```
+systemctl status docker.service
+```
+
+设置服务自启动
+
+```
+systemctl enable docker.service
+```
+
+禁止服务自启动
+
+```
+systemctl disable docker.service
+```
+
+查看服务是否自启动
+
+```
+systemctl is-enabled docker.service
+```
+
+列出所有自启动服务
+
+```
+systemctl list-unit-files|grep enabled
+```
+
+列出系统所有服务的启动情况
+
+```
+systemctl list-units --type=service
+```
+
+### 进程管理
+
+查看进程
+
+```
+ps -A 						显示所有进程
+```
+
+结束进程
+
+```
+killall -9 mysql 			结束名称为mysql的进程（包括同名进程） 
+```
+
+### 内容修改
+
+打开文件
+
+```
+vim my.cnf					在当前文件夹下打开名称为my.cnf文件
+```
+
+修改内容
+
+```
+按“i”键，进入编辑模式，开始编辑。
+按“esc”键，退出编辑模式，结束编辑。
+```
+
+是否保存
+
+注意：要退出编辑模式
+
+```
+:（冒号不要掉）wq				保存编辑
+:q!							 不保存编辑
+```

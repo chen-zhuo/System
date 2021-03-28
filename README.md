@@ -1,4 +1,4 @@
 # System
 本知识库主要涉及一些计算机的基础知识和基本概念包括常用的计算机系统操作
 
-主要内容：Dos批处理、Windows系统、Linux系统。
+主要内容：DOS批处理、Windows系统、Linux系统。

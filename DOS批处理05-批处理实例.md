@@ -69,3 +69,16 @@ schtasks /create /tn 记事本 /tr notepad.exe /sc DAILY /st 10:00
 exit
 ```
 
+### 执行Python脚本
+
+```
+@echo off
+
+f:
+
+cd f:/路径
+
+start python 脚本.py
+```
+
+!> 若脚本里面有引入其他的脚本文件，最好在项目的根目录下运行。

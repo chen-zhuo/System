@@ -79,9 +79,9 @@ taskkill /im SunloginClient.exe /f /t
 
 `net localgroup 用户组名 用户 /add` 命令：将当用户添加到新的用户组。
 
-?> 如果是普通用户添加到管理员用户组中，则该用户权限提高。
-
 `net localgroup 用户组名 用户 /delete` 命令：将当用户从用户组中删除。
+
+?> 如果是普通用户添加到管理员用户组中，则该用户权限提高。
 
 ### 网络命令
 

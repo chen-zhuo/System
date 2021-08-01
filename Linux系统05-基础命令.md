@@ -1,10 +1,52 @@
+# 基础命令
+
+> **说明**：本文中对Linux命令的讲解都是基于名为CentOS的Linux发行版本，我自己使用的是阿里云服务器，系统版本为CentOS  8.4 64位。不同的Linux发行版本在Shell命令和工具程序上会有一些差别，但是这些差别是很小的。
+
+**首先我们要知道一点，Linux系统当中没有输出错误就代表执行成功。**
+
+##### 关机重启
+
+在linux领域内大多用在服务器上，很少遇到关机的操作。毕竟服务器上跑一个服务是永无止境的，除非特殊情况下，不得已才会关机。**但不管是重启系统还是关闭系统，首先要运行 `sync` 命令，把内存中的数据写到磁盘中。**
+
+```
+sync # 将数据由内存同步到硬盘中。
+
+shutdown # 关机指令，你可以man shutdown 来看一下帮助文档。例如你可以运行如下命令关机：
+
+shutdown –h 10 # 这个命令告诉大家，计算机将在10分钟后关机
+
+shutdown –h now # 立马关机
+
+shutdown –h 20:25 # 系统会在今天20:25关机
+
+shutdown –h +10 # 十分钟后关机
+
+shutdown –r now # 系统立马重启
+
+shutdown –r +10 # 系统十分钟后重启
+
+reboot # 立即重启，等同于 shutdown –r now
+
+halt # 关闭系统，等同于shutdown –h now 和 poweroff
+```
+
+重启和关机 - **reboot** / **shutdown**。
+
+> 说明：在执行`shutdown`命令时会向登录系统的用户发出警告，可以在命令后面跟上警告消息来替换默认的警告消息，也可以在`-h`参数后通过`now`来表示立刻关机。
 
 
 
 
 
 
-### 基础命令
+
+
+
+
+
+
+
+
 
 Linux系统的命令通常都是如下所示的格式：
 
@@ -124,31 +166,6 @@ Linux系统的命令通常都是如下所示的格式：
     ```
 
     
-
-8. 重启和关机 - **reboot** / **shutdown**。
-
-    ```
-    [root ~]# shutdown -h +5
-    Shutdown scheduled for Sun 2019-05-26 19:34:27 CST, use 'shutdown -c' to cancel.
-    [root ~]# 
-    Broadcast message from root (Sun 2019-05-26 19:29:27 CST):
-    
-    The system is going down for power-off at Sun 2019-05-26 19:34:27 CST!
-    [root ~]# shutdown -c
-    
-    Broadcast message from root (Sun 2019-05-26 19:30:22 CST):
-    
-    The system shutdown has been cancelled at Sun 2019-05-26 19:31:22 CST!
-    [root ~]# shutdown -r 23:58
-    Shutdown scheduled for Sun 2019-05-26 23:58:00 CST, use 'shutdown -c' to cancel.
-    [root ~]# shutdown -c
-    
-    Broadcast message from root (Sun 2019-05-26 19:31:06 CST):
-    
-    The system shutdown has been cancelled at Sun 2019-05-26 19:32:06 CST!
-    ```
-
-    > 说明：在执行`shutdown`命令时会向登录系统的用户发出警告，可以在命令后面跟上警告消息来替换默认的警告消息，也可以在`-h`参数后通过`now`来表示立刻关机。
 
 9. 退出登录 - **exit** / **logout**。
 
@@ -1256,14 +1273,6 @@ Linux系统的命令通常都是如下所示的格式：
 
 
 
-### 系统结构
-
-##### 目录结构
-
-**Windows系统中的文件夹是建立在多个磁盘下面的，而Linux系统所有的目录都是建立在根目录下的。**
-
-![目录结构](F:\Project Notebook\Knowledge\Linux系统\Image\目录结构.png)
-
 ##### 目录详解
 
 在根目录下有许多目录，包含不同功能的文件
@@ -1331,12 +1340,6 @@ pwd : 当前目录的绝对路径# 注意：cd命令中，在cd后面都要带�
 
 ```
 exit : 退出系统登录logout : 退出登录
-```
-
-##### 关机重启
-
-```
-关机指令 : poweroff halt       立刻关机		  shutdown -h now  	  立刻关机		  shutdown -h +5      5分钟之后关机		  shutdown -h 12:00   指定12:00关机		  shutdown -c 		  取消关机命令		  重启指令 : reboot         	 	立刻重启		  shutdown -r now      立刻重启
 ```
 
 ### 远程连接

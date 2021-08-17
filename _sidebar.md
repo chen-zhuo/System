@@ -7,4 +7,4 @@
   - [Linux系统01-Linux简介](Linux系统01-Linux简介.md)
   - [Linux系统02-环境搭建](Linux系统02-环境搭建.md)
   - [Linux系统03-常用软件](Linux系统03-常用软件.md)
-  - [Linux系统04-基础命令](Linux系统04-基础命令.md)
+  - [Linux系统04-基础命令（文件目录）](Linux系统04-基础命令（文件目录）.md)

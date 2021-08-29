@@ -1,22 +1,4 @@
-# 基础命令（进程管理）
-
-## 进程
-
-Linux中进程的基本知识点：
-
-1. 在Linux中，每一个程序都有自己的一个进程，每一个进程都有一个id号和一个父进程。
-
-2. 进程有两种存在方式：前台运行，一般基本的程序；后台运行，启动的基础服务。
-
-    
-
-
-
-
-
-
-
-
+ 
 
 ### 主机名
 
@@ -24,33 +6,28 @@ Linux中进程的基本知识点：
 
 修改主机名（hostname 新名字），再重连云服务器修改成功。
 
-1. 查看和修改密码有效期 - **chage**。
+以管理员身份执行命令 - **sudo**。
 
-    设置hellokitty用户100天后必须修改密码，过期前15天通知该用户，过期后15天禁用该用户。
+```
+[hellokitty ~]$ ls /root
+ls: cannot open directory /root: Permission denied
+[hellokitty ~]$ sudo ls /root[sudo] password for hellokitty:
+```
 
-    ```
-    chage -M 100 -W 15 -I 7 hellokitty
-    ```
+> **说明**：如果希望用户能够以管理员身份执行命令，用户必须要出现在sudoers名单中，sudoers文件在 `/etc`目录下，如果希望直接编辑该文件也可以使用下面的命令。
 
-2. 以管理员身份执行命令 - **sudo**。
+```
+# 给普通用户赋予超级用户才能执行的命令权限，前提是要root修改sudo命令的配置文件，给出权利才能使用sudo
+sudo -l：查看能使用超级管理员才能执行的命令
+sudo 命令的绝对路径 命令：执行超级管理员才能执行的命令
+sudo /sbin/shtdown -r now：执行这条命令的前提是超级管理员给了这条命令的权限
+```
 
-    ```
-    [hellokitty ~]$ ls /rootls: cannot open directory /root: Permission denied[hellokitty ~]$ sudo ls /root[sudo] password for hellokitty:
-    ```
+##### 
 
-    > **说明**：如果希望用户能够以管理员身份执行命令，用户必须要出现在sudoers名单中，sudoers文件在 `/etc`目录下，如果希望直接编辑该文件也可以使用下面的命令。
+3. 显示用户与用户组的信息 - **id**。
 
-3. 编辑sudoers文件 - **visudo**。
-
-    这里使用的编辑器是vi，关于vi的知识在后面有讲解。该文件的部分内容如下所示：
-
-    ```
-    ## Allow root to run any commands anywhere root    ALL=(ALL)   ALL## Allows members of the 'sys' group to run networking, software, ## service management apps and more.# %sys ALL = NETWORKING, SOFTWARE, SERVICES, STORAGE, DELEGATING, PROCESSES, LOCATE, DRIVERS## Allows people in group wheel to run all commands%wheel  ALL=(ALL)   ALL## Same thing without a password# %wheel    ALL=(ALL)   NOPASSWD: ALL## Allows members of the users group to mount and unmount the## cdrom as root# %users  ALL=/sbin/mount /mnt/cdrom, /sbin/umount /mnt/cdrom## Allows members of the users group to shutdown this system# %users  localhost=/sbin/shutdown -h now
-    ```
-
-4. 显示用户与用户组的信息 - **id**。
-
-    
+     
 
 
 ## 运行
@@ -84,23 +61,6 @@ halt # 关闭系统，等同于shutdown –h now 和 poweroff
 重启和关机 - **reboot** / **shutdown**。
 
 > 说明：在执行`shutdown`命令时会向登录系统的用户发出警告，可以在命令后面跟上警告消息来替换默认的警告消息，也可以在`-h`参数后通过`now`来表示立刻关机。
-
-
-
-
-
-
-
-
-
-##### sudo权限
-
-```
-# 给普通用户赋予超级用户才能执行的命令权限，前提是要root修改sudo命令的配置文件，给出权利才能使用sudo
-sudo -l：查看能使用超级管理员才能执行的命令
-sudo 命令的绝对路径 命令：执行超级管理员才能执行的命令
-sudo /sbin/shtdown -r now：执行这条命令的前提是超级管理员给了这条命令的权限
-```
 
 ##### ACL权限
 
@@ -309,27 +269,8 @@ lsattr -a abc：查看abc文件属性（-a显示所有文件和目录，-d若目
     [root ~]# cat record.log | grep AAA | grep -v BBB | wc -l
     ```
 
-2. 输出重定向和错误重定向 - **>** / **>>** / **2>**。
+2. 别名
 
-    ```
-    [root ~]# cat readme.txtbananaapplegrapeapplegrapewatermelonpearpitaya[root ~]# cat readme.txt | sort | uniq > result.txt[root ~]# cat result.txtapplebananagrapepearpitayawatermelon
-    ```
-
-3. 输入重定向 - **<**。
-
-    ```
-    [root ~]# echo 'hello, world!' > hello.txt[root ~]# wall < hello.txt[root ~]#Broadcast message from root (Wed Jun 20 19:43:05 2018):hello, world![root ~]# echo 'I will show you some code.' >> hello.txt[root ~]# wall < hello.txt[root ~]#Broadcast message from root (Wed Jun 20 19:43:55 2018):hello, world!I will show you some code.
-    ```
-
-4. 多重定向 - **tee**。
-
-    下面的命令除了在终端显示命令`ls`的结果之外，还会追加输出到`ls.txt`文件中。
-
-    ```
-    [root ~]# ls | tee -a ls.txt
-    ```
-
-#### 别名
 
 1. **alias**
 
@@ -444,8 +385,6 @@ lsattr -a abc：查看abc文件属性（-a显示所有文件和目录，-d若目
     - `yum info`：显示软件包的相关信息，例如`yum info nginx`。
 
 2. rpm
-
-    ​    
 
     \- Redhat Package Manager。
 
@@ -651,19 +590,7 @@ lsattr -a abc：查看abc文件属性（-a显示所有文件和目录，-d若目
 
 ### 进程管理
 
-1. 查看进程 - **ps**。
-
-    ```
-    [root ~]# ps -efUID        PID  PPID  C STIME TTY          TIME CMDroot         1     0  0 Jun23 ?        00:00:05 /usr/lib/systemd/systemd --switched-root --system --deserialize 21root         2     0  0 Jun23 ?        00:00:00 [kthreadd]...[root ~]# ps -ef | grep mysqldroot      4943  4581  0 22:45 pts/0    00:00:00 grep --color=auto mysqldmysql    25257     1  0 Jun25 ?        00:00:39 /usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld/mysqld.pid
-    ```
-
-2. 显示进程状态树 - **pstree**。
-
-    ```
-    [root ~]# pstreesystemd─┬─AliYunDun───18*[{AliYunDun}]        ├─AliYunDunUpdate───3*[{AliYunDunUpdate}]        ├─2*[agetty]        ├─aliyun-service───2*[{aliyun-service}]        ├─atd        ├─auditd───{auditd}        ├─dbus-daemon        ├─dhclient        ├─irqbalance        ├─lvmetad        ├─mysqld───28*[{mysqld}]        ├─nginx───2*[nginx]        ├─ntpd        ├─polkitd───6*[{polkitd}]        ├─rsyslogd───2*[{rsyslogd}]        ├─sshd───sshd───bash───pstree        ├─systemd-journal        ├─systemd-logind        ├─systemd-udevd        └─tuned───4*[{tuned}]
-    ```
-
-3. 查找与指定条件匹配的进程 - **pgrep**。
+1. 查找与指定条件匹配的进程 - **pgrep**。
 
     ```
     [root ~]$ pgrep mysqld3584
@@ -805,100 +732,8 @@ lsattr -a abc：查看abc文件属性（-a显示所有文件和目录，-d若目
     [root ~]# iostatLinux 3.10.0-693.11.1.el7.x86_64 (iZwz97tbgo9lkabnat2lo8Z)      06/26/2018      _x86_64_       (1 CPU)avg-cpu:  %user   %nice %system %iowait  %steal   %idle           0.79    0.00    0.20    0.04    0.00   98.97Device:            tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtnvda               0.85         6.78        21.32    2106565    6623024vdb               0.00         0.01         0.00       2088          0
     ```
 
-8. 显示所有PCI设备 - **lspci**。
+8. 登录系统
 
-    ```
-    [root ~]# lspci00:00.0 Host bridge: Intel Corporation 440FX - 82441FX PMC [Natoma] (rev 02)00:01.0 ISA bridge: Intel Corporation 82371SB PIIX3 ISA [Natoma/Triton II]00:01.1 IDE interface: Intel Corporation 82371SB PIIX3 IDE [Natoma/Triton II]00:01.2 USB controller: Intel Corporation 82371SB PIIX3 USB [Natoma/Triton II] (rev 01)00:01.3 Bridge: Intel Corporation 82371AB/EB/MB PIIX4 ACPI (rev 03)00:02.0 VGA compatible controller: Cirrus Logic GD 544600:03.0 Ethernet controller: Red Hat, Inc. Virtio network device00:04.0 Communication controller: Red Hat, Inc. Virtio console00:05.0 SCSI storage controller: Red Hat, Inc. Virtio block device00:06.0 SCSI storage controller: Red Hat, Inc. Virtio block device00:07.0 Unclassified device [00ff]: Red Hat, Inc. Virtio memory balloon
-    ```
-
-9. 显示进程间通信设施的状态 - **ipcs**。
-
-    ```
-    [root ~]# ipcs------ Message Queues --------key        msqid      owner      perms      used-bytes   messages    ------ Shared Memory Segments --------key        shmid      owner      perms      bytes      nattch     status      ------ Semaphore Arrays --------key        semid      owner      perms      nsems
-    ```
-
-### Shell编程
-
-之前我们提到过，Shell是一个连接用户和操作系统的应用程序，它提供了人机交互的界面（接口），用户通过这个界面访问操作系统内核的服务。Shell脚本是一种为Shell编写的脚本程序，我们可以通过Shell脚本来进行系统管理，同时也可以通过它进行文件操作。总之，编写Shell脚本对于使用Linux系统的人来说，应该是一项标配技能。
-
-互联网上有大量关于Shell脚本的相关知识，我不打算再此对Shell脚本做一个全面系统的讲解，我们通过下面的代码来感性的认识下Shell脚本就行了。
-
-例子1：输入两个整数m和n，计算从m到n的整数求和的结果。
-
-```
-#!/usr/bin/bashprintf 'm = 'read mprintf 'n = 'read na=$msum=0while [ $a -le $n ]do    sum=$[ sum + a ]    a=$[ a + 1 ]doneecho '结果: '$sum
-```
-
-例子2：自动创建文件夹和指定数量的文件。
-
-```
-#!/usr/bin/bashprintf '输入文件夹名: 'read dirprintf '输入文件名: 'read fileprintf '输入文件数量(<1000): 'read numif [ $num -ge 1000 ]then    echo '文件数量不能超过1000'else    if [ -e $dir -a -d $dir ]    then        rm -rf $dir    else        if [ -e $dir -a -f $dir ]        then            rm -f $dir        fi    fi    mkdir -p $dir    index=1    while [ $index -le $num ]    do        if [ $index -lt 10 ]        then            pre='00'        elif [ $index -lt 100 ]        then            pre='0'        else            pre=''        fi        touch $dir'/'$file'_'$pre$index        index=$[ index + 1 ]    donefi
-```
-
-例子3：自动安装指定版本的Redis。
-
-```
-#!/usr/bin/bashinstall_redis() {    if ! which redis-server > /dev/null    then        cd /root        wget $1$2'.tar.gz' >> install.log        gunzip /root/$2'.tar.gz'        tar -xf /root/$2'.tar'        cd /root/$2        make >> install.log        make install >> install.log        echo '安装完成'    else        echo '已经安装过Redis'    fi}install_redis 'http://download.redis.io/releases/' $1
-```
-
-### 相关资源
-
-1. Linux命令行常用快捷键
-
-    | 快捷键     | 功能说明                                     |
-    | ---------- | -------------------------------------------- |
-    | tab        | 自动补全命令或路径                           |
-    | Ctrl+a     | 将光标移动到命令行行首                       |
-    | Ctrl+e     | 将光标移动到命令行行尾                       |
-    | Ctrl+f     | 将光标向右移动一个字符                       |
-    | Ctrl+b     | 将光标向左移动一个字符                       |
-    | Ctrl+k     | 剪切从光标到行尾的字符                       |
-    | Ctrl+u     | 剪切从光标到行首的字符                       |
-    | Ctrl+w     | 剪切光标前面的一个单词                       |
-    | Ctrl+y     | 复制剪切命名剪切的内容                       |
-    | Ctrl+c     | 中断正在执行的任务                           |
-    | Ctrl+h     | 删除光标前面的一个字符                       |
-    | Ctrl+d     | 退出当前命令行                               |
-    | Ctrl+r     | 搜索历史命令                                 |
-    | Ctrl+g     | 退出历史命令搜索                             |
-    | Ctrl+l     | 清除屏幕上所有内容在屏幕的最上方开启一个新行 |
-    | Ctrl+s     | 锁定终端使之暂时无法输入内容                 |
-    | Ctrl+q     | 退出终端锁定                                 |
-    | Ctrl+z     | 将正在终端执行的任务停下来放到后台           |
-    | !!         | 执行上一条命令                               |
-    | !数字      | 执行数字对应的历史命令                       |
-    | !字母      | 执行最近的以字母打头的命令                   |
-    | !$ / Esc+. | 获得上一条命令最后一个参数                   |
-    | Esc+b      | 移动到当前单词的开头                         |
-    | Esc+f      | 移动到当前单词的结尾                         |
-
-2. man查阅命令手册的内容说明
-
-    | 手册中的标题 | 功能说明                                                     |
-    | ------------ | ------------------------------------------------------------ |
-    | NAME         | 命令的说明和介绍                                             |
-    | SYNOPSIS     | 使用该命令的基本语法                                         |
-    | DESCRIPTION  | 使用该命令的详细描述，各个参数的作用，有时候这些信息会出现在OPTIONS中 |
-    | OPTIONS      | 命令相关参数选项的说明                                       |
-    | EXAMPLES     | 使用该命令的参考例子                                         |
-    | EXIT STATUS  | 命令结束的退出状态码，通常0表示成功执行                      |
-    | SEE ALSO     | 和命令相关的其他命令或信息                                   |
-    | BUGS         | 和命令相关的缺陷的描述                                       |
-    | AUTHOR       | 该命令的作者介绍                                             |
-
-##### 隐藏类型
-
-**在linux中，以 . 开头的文件或文件夹就属于隐藏类型。**
-
-**注意：ls命令查看不到隐藏类型，ls -a命令能查看到。**
-
-```
-.     .autofsck    .ssh
-```
-
-### 系统基本操作
-
-##### 登录系统
 
 **坑：这里不要用小键盘（数字键盘）来输入密码，因为你不确定num lock（数字锁）是否打开。假如打开了键盘锁，进行了输入，输入的密码虽然不会有任何显示的，但还是会有内容的输入，只不过不是数字。**
 
@@ -988,14 +823,6 @@ DEVICE=eth0									# 设备名称eth0BOOTPROTO=static							# 地址类型静�
 service network restart
 ```
 
-### 网络命令
-
-##### 消息命令
-
-```
-write shen：给用户shen发送信息（前提shen是登录状态，ctrl+D保存结束并发送）wall hello：给所有在线用户发送一个内容为hello的信息。（广播信息）
-```
-
 ##### 端口查看
 
 ```
@@ -1016,8 +843,6 @@ ping 192.168.1.1：测试与192.168.1.1的IP地址是否网络相通（它会一
 
 ### 软件包管理
 
-##### 软件包管理简介
-
 ```
 源码包（c语言写的包，安装慢，效率高，指定位置安装（一般建议在/user/local/下））
 二进制包（RPM包、系统默认包（二进制内容），安装快，默认位置安装）
@@ -1034,10 +859,6 @@ date：获取时间date 031410272014.18：将时间更改为2014年03月14日 10
 ```
 man ls：查看ls命令的帮助信息（空格或F向下翻页，回车下翻一行，q退出）man service：查看配置文件service的帮助信息（前面不要加路径）whatis ls：看ls命令的简要的帮助信息ls --help：获取ls命令的选项
 ```
-
-
-
-    
 
 6、文件搜索
     find
@@ -1082,8 +903,6 @@ day09-linux
         ls -l /etc | tail -5
         ls -l /etc | head -10 | tail -5
         ls -l /etc | grep 找的内容
-    查看进程相关
-        ps -ef | grep ssh
 3、搭建主机信任
     密码学的内容，加密-解密，用到一个东西  秘钥
     加密-解密秘钥相同-对称加解密
@@ -1142,7 +961,7 @@ day09-linux
             -c : 打包文件
             -x : 解压缩使用的
             -v : 压缩和解压缩时候显示进度
-        
+
 
     打包使用gzip压缩：    tar -zcvf 压缩后的名字.tar.gz 文件1 文件2 文件3使用gzip解压缩    tar -zxvf 压缩包.tar.gz打包使用bzip2压缩    tar -jcvf 压缩后的名字.tar.bz2 文件1 文件2 文件3使用bzip2解压缩    tar -jxvf 压缩包.tar.bz2
 
@@ -1293,20 +1112,6 @@ yum install (包名)
 yum remove (包名)
 ```
 
-### 文件管理
-
-删除文件
-
-```
-rm -f name	强行删除当前文件夹下名为name的文件
-```
-
-删除文件
-
-```
-rm -rf name/  强行删除当前文件夹下名为name的文件夹，包括name文件夹里的所有内容
-```
-
 ### 服务管理
 
 启动服务（以docker服务为例）
@@ -1363,17 +1168,5 @@ systemctl list-unit-files|grep enabled
 systemctl list-units --type=service
 ```
 
-### 进程管理
 
-查看进程
-
-```
-ps -A 						显示所有进程
-```
-
-结束进程
-
-```
-killall -9 mysql 			结束名称为mysql的进程（包括同名进程） 
-```
 

@@ -1,11 +1,5 @@
  
 
-### 主机名
-
-查看主机名（hostname）
-
-修改主机名（hostname 新名字），再重连云服务器修改成功。
-
 以管理员身份执行命令 - **sudo**。
 
 ```
@@ -23,11 +17,7 @@ sudo 命令的绝对路径 命令：执行超级管理员才能执行的命令
 sudo /sbin/shtdown -r now：执行这条命令的前提是超级管理员给了这条命令的权限
 ```
 
-##### 
 
-3. 显示用户与用户组的信息 - **id**。
-
-     
 
 
 ## 运行
@@ -418,31 +408,20 @@ lsattr -a abc：查看abc文件属性（-a显示所有文件和目录，-d若目
 [root ~]# rpm -qa | grep mysql | xargs rpm -e
 ```
 
-#### 下载解压配置环境变量
 
-下面以安装MongoDB为例，演示这类软件应该如何安装。
-
-```
-[root ~]# wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-3.6.5.tgz--2018-06-21 18:32:53--  https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-3.6.5.tgzResolving fastdl.mongodb.org (fastdl.mongodb.org)... 52.85.83.16, 52.85.83.228, 52.85.83.186, ...Connecting to fastdl.mongodb.org (fastdl.mongodb.org)|52.85.83.16|:443... connected.HTTP request sent, awaiting response... 200 OKLength: 100564462 (96M) [application/x-gzip]Saving to: ‘mongodb-linux-x86_64-rhel70-3.6.5.tgz’100%[==================================================>] 100,564,462  630KB/s   in 2m 9s2018-06-21 18:35:04 (760 KB/s) - ‘mongodb-linux-x86_64-rhel70-3.6.5.tgz’ saved [100564462/100564462][root ~]# gunzip mongodb-linux-x86_64-rhel70-3.6.5.tgz[root ~]# tar -xvf mongodb-linux-x86_64-rhel70-3.6.5.tarmongodb-linux-x86_64-rhel70-3.6.5/READMEmongodb-linux-x86_64-rhel70-3.6.5/THIRD-PARTY-NOTICESmongodb-linux-x86_64-rhel70-3.6.5/MPL-2mongodb-linux-x86_64-rhel70-3.6.5/GNU-AGPL-3.0mongodb-linux-x86_64-rhel70-3.6.5/bin/mongodumpmongodb-linux-x86_64-rhel70-3.6.5/bin/mongorestoremongodb-linux-x86_64-rhel70-3.6.5/bin/mongoexportmongodb-linux-x86_64-rhel70-3.6.5/bin/mongoimportmongodb-linux-x86_64-rhel70-3.6.5/bin/mongostatmongodb-linux-x86_64-rhel70-3.6.5/bin/mongotopmongodb-linux-x86_64-rhel70-3.6.5/bin/bsondumpmongodb-linux-x86_64-rhel70-3.6.5/bin/mongofilesmongodb-linux-x86_64-rhel70-3.6.5/bin/mongoreplaymongodb-linux-x86_64-rhel70-3.6.5/bin/mongoperfmongodb-linux-x86_64-rhel70-3.6.5/bin/mongodmongodb-linux-x86_64-rhel70-3.6.5/bin/mongosmongodb-linux-x86_64-rhel70-3.6.5/bin/mongomongodb-linux-x86_64-rhel70-3.6.5/bin/install_compass[root ~]# vim .bash_profile...PATH=$PATH:$HOME/bin:$HOME/mongodb-linux-x86_64-rhel70-3.6.5/binexport PATH...[root ~]# source .bash_profile[root ~]# mongod --versiondb version v3.6.5git version: a20ecd3e3a174162052ff99913bc2ca9a839d618OpenSSL version: OpenSSL 1.0.1e-fips 11 Feb 2013allocator: tcmallocmodules: nonebuild environment:    distmod: rhel70    distarch: x86_64    target_arch: x86_64[root ~]# mongo --versionMongoDB shell version v3.6.5git version: a20ecd3e3a174162052ff99913bc2ca9a839d618OpenSSL version: OpenSSL 1.0.1e-fips 11 Feb 2013allocator: tcmallocmodules: nonebuild environment:    distmod: rhel70    distarch: x86_64    target_arch: x86_64
-```
-
-> 说明：当然也可以通过yum来安装MongoDB，具体可以参照[官方网站](https://docs.mongodb.com/master/administration/install-on-linux/)上给出的说明。
 
 #### 源代码构建安装
 
 1. 安装Python 3.6。
 
     ```
-    [root ~]# yum install gcc[root ~]# wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tgz[root ~]# gunzip Python-3.6.5.tgz[root ~]# tar -xvf Python-3.6.5.tar[root ~]# cd Python-3.6.5[root ~]# ./configure --prefix=/usr/local/python36 --enable-optimizations[root ~]# yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel[root ~]# make && make install...[root ~]# ln -s /usr/local/python36/bin/python3.6 /usr/bin/python3[root ~]# python3 --versionPython 3.6.5[root ~]# python3 -m pip install -U pip[root ~]# pip3 --version
+    
     ```
 
     > 说明：上面在安装好Python之后还需要注册PATH环境变量，将Python安装路径下bin文件夹的绝对路径注册到PATH环境变量中。注册环境变量可以修改用户主目录下的.bash_profile或者/etc目录下的profile文件，二者的区别在于前者相当于是用户环境变量，而后者相当于是系统环境变量。
 
-2. 安装Redis-3.2.12。
+    
 
-    ```
-    [root ~]# wget http://download.redis.io/releases/redis-3.2.12.tar.gz[root ~]# gunzip redis-3.2.12.tar.gz[root ~]# tar -xvf redis-3.2.12.tar[root ~]# cd redis-3.2.12[root ~]# make && make install[root ~]# redis-server --versionRedis server v=3.2.12 sha=00000000:0 malloc=jemalloc-4.0.3 bits=64 build=5bc5cd3c03d6ceb6[root ~]# redis-cli --versionredis-cli 3.2.12
-    ```
 
 ### 配置服务
 

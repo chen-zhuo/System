@@ -131,14 +131,6 @@ lsattr -a abc：查看abc文件属性（-a显示所有文件和目录，-d若目
     ...
     ```
 
-5. 查看系统和主机名 - **uname** / **hostname**。
-
-    ```
-    [root@izwz97tbgo9lkabnat2lo8z ~]# unameLinux[root@izwz97tbgo9lkabnat2lo8z ~]# hostnameizwz97tbgo9lkabnat2lo8z[root@iZwz97tbgo9lkabnat2lo8Z ~]# cat /etc/centos-releaseCentOS Linux release 7.6.1810 (Core)
-    ```
-
-    > 说明：`cat`是连接文件内容并打印到标准输出的命令，后面会讲到该命令；`/etc`是Linux系统上的一个非常重要的目录，它保存了很多的配置文件；`centos-release`是该目录下的一个文件，因为我自己使用的Linux发行版本是CentOS 7.6，因此这里会有一个这样的文件。
-
 6. 时间和日期 - **date** / **cal**。
 
     ```
@@ -155,20 +147,6 @@ lsattr -a abc：查看abc文件属性（-a显示所有文件和目录，-d若目
 
 > **说明**：查看到历史命令之后，可以用`!历史命令编号`来重新执行该命令；通过`history -c`可以清除历史命令。
 
-5. 查看文件内容 - **cat** / **tac** / **head** / **tail** / **more** / **less** / **rev** / **od**。
-
-    ```
-    [root ~]# wget http://www.sohu.com/ -O sohu.html--2018-06-20 18:42:34--  http://www.sohu.com/Resolving www.sohu.com (www.sohu.com)... 14.18.240.6Connecting to www.sohu.com (www.sohu.com)|14.18.240.6|:80... connected.HTTP request sent, awaiting response... 200 OKLength: 212527 (208K) [text/html]Saving to: ‘sohu.html’100%[==================================================>] 212,527     --.-K/s   in 0.03s2018-06-20 18:42:34 (7.48 MB/s) - ‘sohu.html’ saved [212527/212527][root ~]# cat sohu.html...[root ~]# head -10 sohu.html<!DOCTYPE html><html><head><title>搜狐</title><meta name="Keywords" content="搜狐,门户网站,新媒体,网络媒体,新闻,财经,体育,娱乐,时尚,汽车,房产,科技,图片,论坛,微博,博客,视频,电影,电视剧"/><meta name="Description" content="搜狐网为用户提供24小时不间断的最新资讯，及搜索、邮件等网络服务。内容包括全球热点事件、突发新闻、时事评论、热播影视剧、体育赛事、行业动态、生活服务信息，以及论坛、博客、微博、我的搜狐等互动空间。" /><meta name="shenma-site-verification" content="1237e4d02a3d8d73e96cbd97b699e9c3_1504254750"><meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>[root ~]# tail -2 sohu.html</body></html>[root ~]# less sohu.html...[root ~]# cat -n sohu.html | more...
-    ```
-
-    > **说明**：上面用到了一个名为`wget`的命令，它是一个网络下载器程序，可以从指定的URL下载资源。
-
-6. 拷贝/移动文件 - **cp** / **mv**。
-
-    ```
-    [root ~]# mkdir backup[root ~]# cp sohu.html backup/[root ~]# cd backup[root backup]# lssohu.html[root backup]# mv sohu.html sohu_index.html[root backup]# lssohu_index.html
-    ```
-
 7. 文件重命名 - **rename**。
 
 ```
@@ -177,33 +155,8 @@ lsattr -a abc：查看abc文件属性（-a显示所有文件和目录，-d若目
 
 1. 查找文件和查找内容 - **find** / **grep**。
 
-    ```
-    [root@iZwz97tbgo9lkabnat2lo8Z ~]# find / -name "*.html"/root/sohu.html/root/backup/sohu_index.html[root@izwz97tbgo9lkabnat2lo8z ~]# find . -atime 7 -type f -print[root@izwz97tbgo9lkabnat2lo8z ~]# find . -type f -size +2k[root@izwz97tbgo9lkabnat2lo8z ~]# find . -type f -name "*.swp" -delete[root@iZwz97tbgo9lkabnat2lo8Z ~]# grep "<script>" sohu.html -n20:<script>[root@iZwz97tbgo9lkabnat2lo8Z ~]# grep -E \<\/?script.*\> sohu.html -n20:<script>22:</script>24:<script src="//statics.itc.cn/web/v3/static/js/es5-shim-08e41cfc3e.min.js"></script>25:<script src="//statics.itc.cn/web/v3/static/js/es5-sham-1d5fa1124b.min.js"></script>26:<script src="//statics.itc.cn/web/v3/static/js/html5shiv-21fc8c2ba6.js"></script>29:<script type="text/javascript">52:</script>...
-    ```
-
     > **说明**：`grep`在搜索字符串时可以使用正则表达式，如果需要使用正则表达式可以用`grep -E`或者直接使用`egrep`。
 
-2. 创建链接和查看链接 - **ln** / **readlink**。
-
-    ```
-    [root@iZwz97tbgo9lkabnat2lo8Z ~]# ls -l sohu.html-rw-r--r-- 1 root root 212131 Jun 20 19:15 sohu.html[root@iZwz97tbgo9lkabnat2lo8Z ~]# ln /root/sohu.html /root/backup/sohu_backup[root@iZwz97tbgo9lkabnat2lo8Z ~]# ls -l sohu.html-rw-r--r-- 2 root root 212131 Jun 20 19:15 sohu.html[root@iZwz97tbgo9lkabnat2lo8Z ~]# ln /root/sohu.html /root/backup/sohu_backup2[root@iZwz97tbgo9lkabnat2lo8Z ~]# ls -l sohu.html-rw-r--r-- 3 root root 212131 Jun 20 19:15 sohu.html[root@iZwz97tbgo9lkabnat2lo8Z ~]# ln -s /etc/centos-release sysinfo[root@iZwz97tbgo9lkabnat2lo8Z ~]# ls -l sysinfolrwxrwxrwx 1 root root 19 Jun 20 19:21 sysinfo -> /etc/centos-release[root@iZwz97tbgo9lkabnat2lo8Z ~]# cat sysinfoCentOS Linux release 7.4.1708 (Core)[root@iZwz97tbgo9lkabnat2lo8Z ~]# cat /etc/centos-releaseCentOS Linux release 7.4.1708 (Core)
-    ```
-
-    > **说明**：链接可以分为硬链接和软链接（符号链接）。硬链接可以认为是一个指向文件数据的指针，就像Python中对象的引用计数，每添加一个硬链接，文件的对应链接数就增加1，只有当文件的链接数为0时，文件所对应的存储空间才有可能被其他文件覆盖。我们平常删除文件时其实并没有删除硬盘上的数据，我们删除的只是一个指针，或者说是数据的一条使用记录，所以类似于“文件粉碎机”之类的软件在“粉碎”文件时除了删除文件指针，还会在文件对应的存储区域填入数据来保证文件无法再恢复。软链接类似于Windows系统下的快捷方式，当软链接链接的文件被删除时，软链接也就失效了。
-
-3. 压缩/解压缩和归档/解归档 - **gzip** / **gunzip** / **xz**。
-
-```
-[root@iZwz97tbgo9lkabnat2lo8Z ~]# wget http://download.redis.io/releases/redis-4.0.10.tar.gz--2018-06-20 19:29:59--  http://download.redis.io/releases/redis-4.0.10.tar.gzResolving download.redis.io (download.redis.io)... 109.74.203.151Connecting to download.redis.io (download.redis.io)|109.74.203.151|:80... connected.HTTP request sent, awaiting response... 200 OKLength: 1738465 (1.7M) [application/x-gzip]Saving to: ‘redis-4.0.10.tar.gz’100%[==================================================>] 1,738,465   70.1KB/s   in 74s2018-06-20 19:31:14 (22.9 KB/s) - ‘redis-4.0.10.tar.gz’ saved [1738465/1738465][root@iZwz97tbgo9lkabnat2lo8Z ~]# ls redis*redis-4.0.10.tar.gz[root@iZwz97tbgo9lkabnat2lo8Z ~]# gunzip redis-4.0.10.tar.gz[root@iZwz97tbgo9lkabnat2lo8Z ~]# ls redis*redis-4.0.10.tar
-```
-
-1. 归档和解归档 - **tar**。
-
-```
-[root@iZwz97tbgo9lkabnat2lo8Z ~]# tar -xvf redis-4.0.10.tarredis-4.0.10/redis-4.0.10/.gitignoreredis-4.0.10/00-RELEASENOTESredis-4.0.10/BUGSredis-4.0.10/CONTRIBUTINGredis-4.0.10/COPYINGredis-4.0.10/INSTALLredis-4.0.10/MANIFESTOredis-4.0.10/Makefileredis-4.0.10/README.mdredis-4.0.10/deps/redis-4.0.10/deps/Makefileredis-4.0.10/deps/README.md...
-```
-
-> 说明：归档（也称为创建归档）和解归档都使用`tar`命令，通常创建归档需要`-cvf`三个参数，其中`c`表示创建（create），`v`表示显示创建归档详情（verbose），`f`表示指定归档的文件（file）；解归档需要加上`-xvf`参数，其中`x`表示抽取（extract），其他两个参数跟创建归档相同。
 
 1. 将标准输入转成命令行参数 - **xargs**。
 

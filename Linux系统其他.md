@@ -767,13 +767,6 @@ ifconfig：查看和设置网卡信息（eth0第一网卡，eth1第二块网卡�
 ping 192.168.1.1：测试与192.168.1.1的IP地址是否网络相通（它会一直ping，ctrl+c停止）ping -c 4 192.168.1.1：给192.168.1.1的IP地址发送4个数据包
 ```
 
-### 软件包管理
-
-```
-源码包（c语言写的包，安装慢，效率高，指定位置安装（一般建议在/user/local/下））
-二进制包（RPM包、系统默认包（二进制内容），安装快，默认位置安装）
-```
-
 ### 时间命令
 
 ```
@@ -891,61 +884,7 @@ day09-linux
 
     打包使用gzip压缩：    tar -zcvf 压缩后的名字.tar.gz 文件1 文件2 文件3使用gzip解压缩    tar -zxvf 压缩包.tar.gz打包使用bzip2压缩    tar -jcvf 压缩后的名字.tar.bz2 文件1 文件2 文件3使用bzip2解压缩    tar -jxvf 压缩包.tar.bz2
 
-9、软件安装之yum安装
-    红帽系列软件安装使用  yum安装
-    大便系列软件安装使用  apt-get安装
-    去哪下载软件呢？yum源，这个源在哪呢？默认都有自己的源，但是这个源是在国外的。所以使用linux经常将源设置为国内源，阿里源、清华源、搜狐源、网易源、中科大源
-    如何配置为国内源？
-    打开阿里源，点击帮助
-    （1）mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup
-    （2）下载对应的源配置文件
-    wget是一个专业的下载软件，但是需要安装
-    wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
-    或者
-    curl是自带的，不用安装
-    curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo
-    （3）执行
-        如果是本地，需要网络，吃饭的时候执行，晚上执行，热点执行
-        yum clean all
-        yum make cache
 
-
-day10-linux
-
-1、软件安装
-    （1）yum安装（多）
-        yum install -y 包名   中间一路yes
-        yum remove -y 包名
-        可以只下载安装包，不安装
-        yum install -y --downloadonly --downloaddir=./ wget
-        下载就是.rpm的包。
-    （2）rpm安装
-        不论你用的是yum还是用的rpm安装，其实安装的都是rpm包。在linux里面，安装软件的时候，不仅仅是安装这么一个软件，与之对应的要按照很多的依赖软件
-        a ==》 b===》c==》d
-        如果使用rpm安装，你要知道软件依赖关系才能安装，但是使用yum的话，不用知道依赖关系，yum自动为你解决
-        比如  yum install -y --downloadonly --downloaddir=./ vim
-            包含vim的包以及vim依赖的包，全部下载下来之后，估计10个包，这10个都是rpm，请问先装哪个后装哪个。
-            yum install -y vim   依赖关系自动解决
-        -ivh ：安装     rpm -ivh 包.rpm
-        -e ：卸载       rpm -e wget
-        -ql : 列出包安装路径   rpm -ql wget
-        -qi : 列出指定包的详细信息  rpm -qi wget
-    （3）编译安装（多）
-        相对来说，编译安装是需要编译源码的，安装的软件更加适合你的电脑，你的软硬件环境，更加的稳定，相比较yum来说稳定
-        编译安装3个步骤：
-        （1）配置
-            ./configure --prefix=你安装路径 --以及其它参数
-        （2）编译
-            linux里面的软件都是使用c、c++写的，所以你得有编译器
-            gcc gcc-c++
-            yum install -y gcc gcc-c++
-            make 
-        （3）安装
-            make install
-        走完一步之后，可以执行一个指令  echo $?  ,如果返回0，代表上面指令执行成功，如果返回其它，说明执行失败
-        指令可以连写：   make && make install
-        安装ntfs-3g
-        安装python
 2、服务和进程相关指令
     linux的启动等级，打开这个文件   vi /etc/inittab
     0 : 关机等级
@@ -1013,30 +952,6 @@ day10-linux
     
 
     一个服务器是否能放多个网站呢？可以的，配置虚拟主机
-
-7、各系统指令区别总结
-    centos6.8
-    centos7.0
-    ubuntu16.04
-
-需要执行的下载指令有
-yum install -y gcc gcc-c++
-yum install -y zlib*
-yum install -y nfs-utils
-yum install -y gcc openssl-devel perl
-yum install -y gcc gcc-c++ autoconf automake zlib zlib-devel openssl openssl-devel pcre pcre-devel
-
-### 包管理
-
-```
-# 安装安装包
-yum install (包名) 
-```
-
-```
-# 卸载软件
-yum remove (包名)
-```
 
 ### 服务管理
 

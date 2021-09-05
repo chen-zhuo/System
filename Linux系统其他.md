@@ -1,188 +1,23 @@
- 
-
-以管理员身份执行命令 - **sudo**。
+查看命令的说明和位置 - **whatis** / **which** / **whereis**。
 
 ```
-[hellokitty ~]$ ls /root
-ls: cannot open directory /root: Permission denied
-[hellokitty ~]$ sudo ls /root[sudo] password for hellokitty:
+[root ~]# whatis ps
+ps (1)        - report a snapshot of the current processes.
+[root ~]# whatis python
+python (1)    - an interpreted, interactive, object-oriented programming language
+[root ~]# whereis ps
+ps: /usr/bin/ps /usr/share/man/man1/ps.1.gz
+[root ~]# whereis python
+python: /usr/bin/python /usr/bin/python2.7 /usr/lib/python2.7 /usr/lib64/python2.7 /etc/python /usr/include/python2.7 /usr/share/man/man1/python.1.gz
+[root ~]# which ps
+/usr/bin/ps
+[root ~]# which python
+/usr/bin/python
 ```
-
-> **说明**：如果希望用户能够以管理员身份执行命令，用户必须要出现在sudoers名单中，sudoers文件在 `/etc`目录下，如果希望直接编辑该文件也可以使用下面的命令。
-
-```
-# 给普通用户赋予超级用户才能执行的命令权限，前提是要root修改sudo命令的配置文件，给出权利才能使用sudo
-sudo -l：查看能使用超级管理员才能执行的命令
-sudo 命令的绝对路径 命令：执行超级管理员才能执行的命令
-sudo /sbin/shtdown -r now：执行这条命令的前提是超级管理员给了这条命令的权限
-```
-
-
-
-
-## 运行
-
-### 关机重启
-
-在linux领域内大多用在服务器上，很少遇到关机的操作。毕竟服务器上跑一个服务是永无止境的，除非特殊情况下，不得已才会关机。**但不管是重启系统还是关闭系统，首先要运行 `sync` 命令，把内存中的数据写到磁盘中。**
-
-```
-sync # 将数据由内存同步到硬盘中。
-
-shutdown # 关机指令，你可以man shutdown 来看一下帮助文档。例如你可以运行如下命令关机：
-
-shutdown –h 10 # 这个命令告诉大家，计算机将在10分钟后关机
-
-shutdown –h now # 立马关机
-
-shutdown –h 20:25 # 系统会在今天20:25关机
-
-shutdown –h +10 # 十分钟后关机
-
-shutdown –r now # 系统立马重启
-
-shutdown –r +10 # 系统十分钟后重启
-
-reboot # 立即重启，等同于 shutdown –r now
-
-halt # 关闭系统，等同于shutdown –h now 和 poweroff
-```
-
-重启和关机 - **reboot** / **shutdown**。
-
-> 说明：在执行`shutdown`命令时会向登录系统的用户发出警告，可以在命令后面跟上警告消息来替换默认的警告消息，也可以在`-h`参数后通过`now`来表示立刻关机。
-
-##### ACL权限
-
-ACL权限用于身份不足的情况（即所有者、所属组、其他人，三种情况外）。相当于不给用户添加身份，直接给他权限。
-
-```
-df -h：查询系统分区状况
-
-dumpe2fs -h/dev/sda5：查询指定分区详细文件系统信息（sda5就是上面命令查询显示的root分区）（在当中查看Default mount options这行是否有acl，有就表明能开启ACL权限）
-
-mount -o remount,acl/：重新挂载根分区，并加入acl权限（临时挂载）
-
-vim /etc/fstab：修改配置文件（UUID=c2....../ ext4 defaults,acl 1 1）（加入acl,永久挂载）
-mount -o remount/：挂在后重启生效
-```
-
-##### chattr权限
-
-```
-chattr +i 文件或目录：改变文件或目录权限
-（+：增加权限，-：删除权限，=：等于某权限）
-（i：锁住文件，不能对文件删除、改名，也不能修改文件数据；如果是目录，只能修改目录下文件的数据，但不能建立和删除文件，root也会受到该限制。a：如果是文件，只能在文件中增加数据，但不能删除也不能修改数据；如果是目录，只能在目录中建立和修改文件，但不能删除）
-
-lsattr -a abc：查看abc文件属性（-a显示所有文件和目录，-d若目标是目录，列出目录本身的属性）
-```
-
-
-
-
-
-1. 查看自己使用的Shell - **ps**。
-
-    Shell也被称为“壳”或“壳程序”，它是用户与操作系统内核交流的翻译官，简单的说就是人与计算机交互的界面和接口。目前很多Linux系统默认的Shell都是bash（Bourne Again SHell），因为它可以使用tab键进行命令和路径补全、可以保存历史命令、可以方便的配置环境变量以及执行批处理操作。
-
-    ```
-    [root ~]# ps
-      PID TTY          TIME CMD
-     3531 pts/0    00:00:00 bash
-     3553 pts/0    00:00:00 ps
-    ```
-
-2. 查看命令的说明和位置 - **whatis** / **which** / **whereis**。
-
-    ```
-    [root ~]# whatis ps
-    ps (1)        - report a snapshot of the current processes.
-    [root ~]# whatis python
-    python (1)    - an interpreted, interactive, object-oriented programming language
-    [root ~]# whereis ps
-    ps: /usr/bin/ps /usr/share/man/man1/ps.1.gz
-    [root ~]# whereis python
-    python: /usr/bin/python /usr/bin/python2.7 /usr/lib/python2.7 /usr/lib64/python2.7 /etc/python /usr/include/python2.7 /usr/share/man/man1/python.1.gz
-    [root ~]# which ps
-    /usr/bin/ps
-    [root ~]# which python
-    /usr/bin/python
-    ```
-
-3. 清除屏幕上显示的内容 - **clear**。
-
-4. 查看帮助文档 - **man** / **info** / **--help** / **apropos**。
-
-    ```
-    [root@izwz97tbgo9lkabnat2lo8z ~]# ps --help
-    Usage:
-     ps [options]
-     Try 'ps --help <simple|list|output|threads|misc|all>'
-      or 'ps --help <s|l|o|t|m|a>'
-     for additional help text.
-    For more details see ps(1).
-    [root@izwz97tbgo9lkabnat2lo8z ~]# man ps
-    PS(1)                                User Commands                                PS(1)
-    NAME
-           ps - report a snapshot of the current processes.
-    SYNOPSIS
-           ps [options]
-    DESCRIPTION
-    ...
-    ```
-
-6. 时间和日期 - **date** / **cal**。
-
-    ```
-    [root@iZwz97tbgo9lkabnat2lo8Z ~]# dateWed Jun 20 12:53:19 CST 2018[root@iZwz97tbgo9lkabnat2lo8Z ~]# cal      June 2018Su Mo Tu We Th Fr Sa                1  2 3  4  5  6  7  8  910 11 12 13 14 15 1617 18 19 20 21 22 2324 25 26 27 28 29 30[root@iZwz97tbgo9lkabnat2lo8Z ~]# cal 5 2017      May 2017Su Mo Tu We Th Fr Sa    1  2  3  4  5  6 7  8  9 10 11 12 1314 15 16 17 18 19 2021 22 23 24 25 26 2728 29 30 31
-    ```
-
-7. 退出登录 - **exit** / **logout**。
-
-8. 查看历史命令 - **history**。
-
-```
-[root@iZwz97tbgo9lkabnat2lo8Z ~]# history...452  ls453  cd Python-3.6.5/454  clear455  history[root@iZwz97tbgo9lkabnat2lo8Z ~]# !454
-```
-
-> **说明**：查看到历史命令之后，可以用`!历史命令编号`来重新执行该命令；通过`history -c`可以清除历史命令。
 
 1. 查找文件和查找内容 - **find** / **grep**。
 
     > **说明**：`grep`在搜索字符串时可以使用正则表达式，如果需要使用正则表达式可以用`grep -E`或者直接使用`egrep`。
-
-
-1. 将标准输入转成命令行参数 - **xargs**。
-
-下面的命令会将查找当前路径下的html文件，然后通过`xargs`将这些文件作为参数传给`rm`命令，实现查找并删除文件的操作。
-
-```
-[root@iZwz97tbgo9lkabnat2lo8Z ~]# find . -type f -name "*.html" | xargs rm -f
-```
-
-下面的命令将a.txt文件中的多行内容变成一行输出到b.txt文件中，其中`<`表示从a.txt中读取输入，`>`表示将命令的执行结果输出到b.txt中。
-
-```
-[root@iZwz97tbgo9lkabnat2lo8Z ~]# xargs < a.txt > b.txt
-```
-
-> **说明**：这个命令就像上面演示的那样常在管道（实现进程间通信的一种方式）和重定向（重新指定输入输出的位置）操作中用到，后面的内容中会讲到管道操作和输入输出重定向操作。
-
-1. 显示文件或目录 - **basename** / **dirname**。
-2. 其他相关工具。
-
-- **sort** - 对内容排序
-- **uniq** - 去掉相邻重复内容
-- **tr** - 替换指定内容为新内容
-- **cut** / **paste** - 剪切/黏贴内容
-- **split** - 拆分文件
-- **file** - 判断文件类型
-- **wc** - 统计文件行数、单词数、字节数
-- **iconv** - 编码转换
-
-```
-[root ~]# cat foo.txtgrapeapplepitaya[root ~]# cat bar.txt100200300400[root ~]# paste foo.txt bar.txtgrape   100apple   200pitaya  300        400[root ~]# paste foo.txt bar.txt > hello.txt[root ~]# cut -b 4-8 hello.txtpe      10le      20aya     30[root ~]# cat hello.txt | tr '\t' ','grape,100apple,200pitaya,300,400[root ~]# split -l 100 sohu.html hello[root ~]# wget https://www.baidu.com/img/bd_logo1.png[root ~]# file bd_logo1.pngbd_logo1.png: PNG image data, 540 x 258, 8-bit colormap, non-interlaced[root ~]# wc sohu.html  2979   6355 212527 sohu.html[root ~]# wc -l sohu.html2979 sohu.html[root ~]# wget http://www.qq.com -O qq.html[root ~]# iconv -f gb2312 -t utf-8 qq.html
-```
 
 #### 管道和重定向
 
@@ -220,154 +55,6 @@ lsattr -a abc：查看abc文件属性（-a显示所有文件和目录，-d若目
     ```
     [root ~]# unalias frm[root ~]# frm sohu.html-bash: frm: command not found
     ```
-
-#### 文本处理
-
-1. 字符流编辑器 - **sed**。
-
-    sed是操作、过滤和转换文本内容的工具。假设有一个名为fruit.txt的文件，内容如下所示。
-
-    ```
-    [root ~]# cat -n fruit.txt      1  banana     2  grape     3  apple     4  watermelon     5  orange
-    ```
-
-    接下来，我们在第2行后面添加一个pitaya。
-
-    ```
-    [root ~]# sed '2a pitaya' fruit.txt bananagrapepitayaapplewatermelonorange
-    ```
-
-    > 注意：刚才的命令和之前我们讲过的很多命令一样并没有改变fruit.txt文件，而是将添加了新行的内容输出到终端中，如果想保存到fruit.txt中，可以使用输出重定向操作。
-
-    在第2行前面插入一个waxberry。
-
-    ```
-    [root ~]# sed '2i waxberry' fruit.txtbananawaxberrygrapeapplewatermelonorange
-    ```
-
-    删除第3行。
-
-    ```
-    [root ~]# sed '3d' fruit.txtbananagrapewatermelonorange
-    ```
-
-    删除第2行到第4行。
-
-    ```
-    [root ~]# sed '2,4d' fruit.txtbananaorange
-    ```
-
-    将文本中的字符a替换为@。
-
-    ```
-    [root ~]# sed 's#a#@#' fruit.txt b@nanagr@pe@pplew@termelonor@nge
-    ```
-
-    将文本中的字符a替换为@，使用全局模式。
-
-    ```
-    [root ~]# sed 's#a#@#g' fruit.txt b@n@n@gr@pe@pplew@termelonor@nge
-    ```
-
-2. 模式匹配和处理语言 - **awk**。
-
-    awk是一种编程语言，也是Linux系统中处理文本最为强大的工具，它的作者之一和现在的维护者就是之前提到过的Brian Kernighan（ken和dmr最亲密的伙伴）。通过该命令可以从文本中提取出指定的列、用正则表达式从文本中取出我们想要的内容、显示指定的行以及进行统计和运算，总之它非常强大。
-
-    假设有一个名为fruit2.txt的文件，内容如下所示。
-
-    ```
-    [root ~]# cat fruit2.txt 1       banana      1202       grape       5003       apple       12304       watermelon  805       orange      400
-    ```
-
-    显示文件的第3行。
-
-    ```
-    [root ~]# awk 'NR==3' fruit2.txt 3       apple       1230
-    ```
-
-    显示文件的第2列。
-
-    ```
-    [root ~]# awk '{print $2}' fruit2.txt bananagrapeapplewatermelonorange
-    ```
-
-    显示文件的最后一列。
-
-    ```
-    [root ~]# awk '{print $NF}' fruit2.txt 120500123080400
-    ```
-
-    输出末尾数字大于等于300的行。
-
-    ```
-    [root ~]# awk '{if($3 >= 300) {print $0}}' fruit2.txt 2       grape       5003       apple       12305       orange      400
-    ```
-
-    上面展示的只是awk命令的冰山一角，更多的内容留给读者自己在实践中去探索。
-
-### 软件安装和配置
-
-#### 使用包管理工具
-
-1. yum
-
-    \- Yellowdog Updater Modified。
-
-    - `yum search`：搜索软件包，例如`yum search nginx`。
-    - `yum list installed`：列出已经安装的软件包，例如`yum list installed | grep zlib`。
-    - `yum install`：安装软件包，例如`yum install nginx`。
-    - `yum remove`：删除软件包，例如`yum remove nginx`。
-    - `yum update`：更新软件包，例如`yum update`可以更新所有软件包，而`yum update tar`只会更新tar。
-    - `yum check-update`：检查有哪些可以更新的软件包。
-    - `yum info`：显示软件包的相关信息，例如`yum info nginx`。
-
-2. rpm
-
-    \- Redhat Package Manager。
-
-    - 安装软件包：`rpm -ivh <packagename>.rpm`。
-    - 移除软件包：`rpm -e <packagename>`。
-    - 查询软件包：`rpm -qa`，例如可以用`rpm -qa | grep mysql`来检查是否安装了MySQL相关的软件包。
-
-下面以Nginx为例，演示如何使用yum安装软件。
-
-```
-[root ~]# yum -y install nginx...Installed:  nginx.x86_64 1:1.12.2-2.el7Dependency Installed:  nginx-all-modules.noarch 1:1.12.2-2.el7  nginx-mod-http-geoip.x86_64 1:1.12.2-2.el7  nginx-mod-http-image-filter.x86_64 1:1.12.2-2.el7  nginx-mod-http-perl.x86_64 1:1.12.2-2.el7  nginx-mod-http-xslt-filter.x86_64 1:1.12.2-2.el7  nginx-mod-mail.x86_64 1:1.12.2-2.el7  nginx-mod-stream.x86_64 1:1.12.2-2.el7Complete![root ~]# yum info nginxLoaded plugins: fastestmirrorLoading mirror speeds from cached hostfileInstalled PackagesName        : nginxArch        : x86_64Epoch       : 1Version     : 1.12.2Release     : 2.el7Size        : 1.5 MRepo        : installedFrom repo   : epelSummary     : A high performance web server and reverse proxy serverURL         : http://nginx.org/License     : BSDDescription : Nginx is a web server and a reverse proxy server for HTTP, SMTP, POP3 and            : IMAP protocols, with a strong focus on high concurrency, performance and low            : memory usage.[root ~]# nginx -vnginx version: nginx/1.12.2
-```
-
-移除Nginx。
-
-```
-[root ~]# yum -y remove nginx
-```
-
-下面以MySQL为例，演示如何使用rpm安装软件。要安装MySQL需要先到[MySQL官方网站](https://www.mysql.com/)下载对应的[RPM文件](https://dev.mysql.com/downloads/mysql/)，当然要选择和你使用的Linux系统对应的版本。MySQL现在是Oracle公司旗下的产品，在MySQL被收购后，MySQL的作者重新制作了一个MySQL的分支MariaDB，可以通过yum进行安装。
-
-```
-[root mysql]# lsmysql-community-client-5.7.22-1.el7.x86_64.rpmmysql-community-common-5.7.22-1.el7.x86_64.rpmmysql-community-libs-5.7.22-1.el7.x86_64.rpmmysql-community-server-5.7.22-1.el7.x86_64.rpm[root mysql]# yum -y remove mariadb-libs[root mysql]# yum -y install libaio[root mysql]#rpm -ivh mysql-community-common-5.7.26-1.el7.x86_64.rpm...[root mysql]#rpm -ivh mysql-community-libs-5.7.26-1.el7.x86_64.rpm...[root mysql]#rpm -ivh mysql-community-client-5.7.26-1.el7.x86_64.rpm...[root mysql]#rpm -ivh mysql-community-server-5.7.26-1.el7.x86_64.rpm...
-```
-
-> 说明：由于MySQL和[MariaDB](https://mariadb.org/)的底层依赖库是有冲突的，所以上面我们首先用`yum`移除了名为mariadb-libs的依赖库并安装了名为libaio支持异步I/O操作的依赖库。关于MySQL和MariaDB之间的关系，可以阅读[维基百科](https://zh.wikipedia.org/wiki/MariaDB)上关于MariaDB的介绍。
-
-移除安装的MySQL。
-
-```
-[root ~]# rpm -qa | grep mysql | xargs rpm -e
-```
-
-
-
-#### 源代码构建安装
-
-1. 安装Python 3.6。
-
-    ```
-    
-    ```
-
-    > 说明：上面在安装好Python之后还需要注册PATH环境变量，将Python安装路径下bin文件夹的绝对路径注册到PATH环境变量中。注册环境变量可以修改用户主目录下的.bash_profile或者/etc目录下的profile文件，二者的区别在于前者相当于是用户环境变量，而后者相当于是系统环境变量。
-
-    
 
 
 ### 配置服务
@@ -452,13 +139,7 @@ lsattr -a abc：查看abc文件属性（-a显示所有文件和目录，-d若目
     [root ~]$ ssh root@120.77.222.217The authenticity of host '120.77.222.217 (120.77.222.217)' can't be established.ECDSA key fingerprint is SHA256:BhUhykv+FvnIL03I9cLRpWpaCxI91m9n7zBWrcXRa8w.ECDSA key fingerprint is MD5:cc:85:e9:f0:d7:07:1a:26:41:92:77:6b:7f:a0:92:65.Are you sure you want to continue connecting (yes/no)? yesWarning: Permanently added '120.77.222.217' (ECDSA) to the list of known hosts.root@120.77.222.217's password: 
     ```
 
-2. 通过网络获取资源 - **wget**。
-
-    - -b 后台下载模式
-    - -O 下载到指定的目录
-    - -r 递归下载
-
-3. 发送和接收邮件 - **mail**。
+    
 
 4. 网络配置工具（旧） - **ifconfig**。
 
@@ -522,7 +203,7 @@ lsattr -a abc：查看abc文件属性（-a显示所有文件和目录，-d若目
     [root ~]$ pgrep mysqld3584
     ```
 
-4. 通过进程号终止进程 - **kill**。
+2. 通过进程号终止进程 - **kill**。
 
     ```
     [root ~]$ kill -l 1) SIGHUP       2) SIGINT       3) SIGQUIT      4) SIGILL       5) SIGTRAP 6) SIGABRT      7) SIGBUS       8) SIGFPE       9) SIGKILL     10) SIGUSR111) SIGSEGV     12) SIGUSR2     13) SIGPIPE     14) SIGALRM     15) SIGTERM16) SIGSTKFLT   17) SIGCHLD     18) SIGCONT     19) SIGSTOP     20) SIGTSTP21) SIGTTIN     22) SIGTTOU     23) SIGURG      24) SIGXCPU     25) SIGXFSZ26) SIGVTALRM   27) SIGPROF     28) SIGWINCH    29) SIGIO       30) SIGPWR31) SIGSYS      34) SIGRTMIN    35) SIGRTMIN+1  36) SIGRTMIN+2  37) SIGRTMIN+338) SIGRTMIN+4  39) SIGRTMIN+5  40) SIGRTMIN+6  41) SIGRTMIN+7  42) SIGRTMIN+843) SIGRTMIN+9  44) SIGRTMIN+10 45) SIGRTMIN+11 46) SIGRTMIN+12 47) SIGRTMIN+1348) SIGRTMIN+14 49) SIGRTMIN+15 50) SIGRTMAX-14 51) SIGRTMAX-13 52) SIGRTMAX-1253) SIGRTMAX-11 54) SIGRTMAX-10 55) SIGRTMAX-9  56) SIGRTMAX-8  57) SIGRTMAX-758) SIGRTMAX-6  59) SIGRTMAX-5  60) SIGRTMAX-4  61) SIGRTMAX-3  62) SIGRTMAX-263) SIGRTMAX-1  64) SIGRTMAX[root ~]# kill 1234[root ~]# kill -9 1234
@@ -534,66 +215,11 @@ lsattr -a abc：查看abc文件属性（-a显示所有文件和目录，-d若目
     ps -ef | grep redis | grep -v grep | awk '{print $2}' | xargs kill
     ```
 
-5. 通过进程名终止进程 - **killall** / **pkill**。
-
-    结束名为mysqld的进程。
-
-    ```
-    [root ~]# pkill mysqld
-    ```
-
-    结束hellokitty用户的所有进程。
-
-    ```
-    [root ~]# pkill -u hellokitty
-    ```
-
-    > 说明：这样的操作会让hellokitty用户和服务器断开连接。
-
-6. 将进程置于后台运行。
-
-    - `Ctrl+Z` - 快捷键，用于停止进程并置于后台。
-    - `&` - 将进程置于后台运行。
-
-    ```
-    [root ~]# mongod &[root ~]# redis-server...^Z[4]+  Stopped                 redis-server
-    ```
-
-7. 查询后台进程 - **jobs**。
+3. 查询后台进程 - **jobs**。
 
     ```
     [root ~]# jobs[2]   Running                 mongod &[3]-  Stopped                 cat[4]+  Stopped                 redis-server
     ```
-
-8. 让进程在后台继续运行 - **bg**。
-
-    ```
-    [root ~]# bg %4[4]+ redis-server &[root ~]# jobs[2]   Running                 mongod &[3]+  Stopped                 cat[4]-  Running                 redis-server &
-    ```
-
-9. 将后台进程置于前台 - **fg**。
-
-    ```
-    [root ~]# fg %4redis-server
-    ```
-
-    > 说明：置于前台的进程可以使用`Ctrl+C`来终止它。
-
-10. 调整程序/进程运行时优先级 - **nice** / **renice**。
-
-11. 用户登出后进程继续工作 - **nohup**。
-
-    ```
-    [root ~]# nohup ping www.baidu.com > result.txt &
-    ```
-
-12. 跟踪进程系统调用情况 - **strace**。
-
-    ```
-    [root ~]# pgrep mysqld8803[root ~]# strace -c -p 8803strace: Process 8803 attached^Cstrace: Process 8803 detached% time     seconds  usecs/call     calls    errors syscall------ ----------- ----------- --------- --------- ---------------- 99.18    0.005719        5719         1           restart_syscall  0.49    0.000028          28         1           mprotect  0.24    0.000014          14         1           clone  0.05    0.000003           3         1           mmap  0.03    0.000002           2         1           accept------ ----------- ----------- --------- --------- ----------------100.00    0.005766                     5           total
-    ```
-
-    > 说明：这个命令的用法和参数都比较复杂，建议大家在真正用到这个命令的时候再根据实际需要进行了解。
 
 13. 查看当前运行级别 - **runlevel**。
 
@@ -658,31 +284,8 @@ lsattr -a abc：查看abc文件属性（-a显示所有文件和目录，-d若目
     [root ~]# iostatLinux 3.10.0-693.11.1.el7.x86_64 (iZwz97tbgo9lkabnat2lo8Z)      06/26/2018      _x86_64_       (1 CPU)avg-cpu:  %user   %nice %system %iowait  %steal   %idle           0.79    0.00    0.20    0.04    0.00   98.97Device:            tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtnvda               0.85         6.78        21.32    2106565    6623024vdb               0.00         0.01         0.00       2088          0
     ```
 
-8. 登录系统
 
-
-**坑：这里不要用小键盘（数字键盘）来输入密码，因为你不确定num lock（数字锁）是否打开。假如打开了键盘锁，进行了输入，输入的密码虽然不会有任何显示的，但还是会有内容的输入，只不过不是数字。**
-
-```
-1.启动或连接Linux系统2.出现login3.输入用户名（管理员为root）和密码4.敲enter进入系统
-```
-
-##### 路径命令
-
-**绝对路径**: 相对于根目录的路径
-**相对路径**: 相对于当前目录的路径
-
-```
-pwd : 当前目录的绝对路径# 注意：cd命令中，在cd后面都要带一个空格。cd .. : 返回上一级目录cd 目录路径 : 切换目录(目录就是文件夹)cd / : 根目录cd ~ : 当前用户的家目录(快捷键cd，因为cd == cd ~)   cd - : 返回上一个目录(注意：是上个目录，不是上级目录)
-```
-
-##### 退出系统
-
-```
-exit : 退出系统登录logout : 退出登录
-```
-
-### 远程连接
+### 远连接
 
 **注意：这里针对的是虚拟机，如果是购买的服务器，记住服务器的公网IP就行了。**
 
@@ -767,17 +370,7 @@ ifconfig：查看和设置网卡信息（eth0第一网卡，eth1第二块网卡�
 ping 192.168.1.1：测试与192.168.1.1的IP地址是否网络相通（它会一直ping，ctrl+c停止）ping -c 4 192.168.1.1：给192.168.1.1的IP地址发送4个数据包
 ```
 
-### 时间命令
 
-```
-date：获取时间date 031410272014.18：将时间更改为2014年03月14日 10：27：18
-```
-
-### 帮助命令
-
-```
-man ls：查看ls命令的帮助信息（空格或F向下翻页，回车下翻一行，q退出）man service：查看配置文件service的帮助信息（前面不要加路径）whatis ls：看ls命令的简要的帮助信息ls --help：获取ls命令的选项
-```
 
 6、文件搜索
     find
@@ -792,7 +385,6 @@ man ls：查看ls命令的帮助信息（空格或F向下翻页，回车下翻�
         -maxdepth : 查找最大目录级别
         -mindepth : 查找最小目录级别
     找什么：1.mp3  *.txt
-    
 
     find / -name dudu.pyfind / -size 10k     等于10k的文件             +10k     大于10k的文件            -10k     小于10k的文件find / *.txt -user liuyanfind / -maxdepth 3 -mindepth 2 -name *.txt  找指定级别的文件
 
@@ -809,7 +401,6 @@ day09-linux
     -n : 显示内容出现的行号
     -l : 显示内容出现的文件名
     -c : 显示出现该内容的次数
-    
 
     也可以写正则表达式, 注意使用 -P    13838384380    \d{11}    ^1\d{10}    3456789    ^1[3-9]\d{9}    test@qq.com   duduxixi@163.com  lalahehe@sina.cn    \w+@\w+\.(com|cn|net)grep 王者荣耀 1.txtgrep 王者荣耀 *.txtgrep 王者荣耀 ~/.txtgrep -P '1[3-9]\d{9}' 3.txt 
 
@@ -850,41 +441,6 @@ day09-linux
     linux和linux之间使用scp进行互发，如果搭建了主机信任，不用输入密码
     winscp，实现windows和linux之间使用scp进行互发
         安装，使用即可，左边：windows目录，右边：linux目录，相互拖动即可
-4、重定向
-    标准输入（stdin, 键盘）、标准输出（stdout, 屏幕）
-    输出重定向：意思就是不输出到屏幕，输出到其他地方
-    ls -l > 1.txt      >作用：首先清空文件，然后写入文件
-    ls -l >> 1.txt     >>作用：追加内容
-    
-
-    错误重定向：指令有错，错误信息显示到哪里ls /lala 2> 1.txt   将错误信息显示到指定文件中ls /lala 2>> 1.txt  将错误信息追加到指定文件中
-    8、压缩和解压（很常用）
-        在linux里面，常见压缩格式有两种，一种叫做gz，一种叫做bz2
-        gzip\gunzip(后缀名是.gz)
-            gzip 文件1 文件2
-            生成之后，源文件不在了，只有压缩文件，每一个都生成一个压缩文件
-            gunzip 文件
-            不能实现打包压缩，不能实现保留源文件
-        bzip2\bunzip2(后缀名是.bz2)
-            bzip2 文件1 文件2
-            每一个生成一个压缩文件
-            -k : 保留源文件
-            bunzip2 压缩文件1 压缩文件2
-        tar（可以实现压缩和解压，可以实现打包的功能）
-            如果打包压缩使用的gzip压缩的，那么后缀名  .tar.gz    .tgz
-            如果打包压缩使用的bzip2压缩的，那么后缀名  .tar.bz2   
-            常用的参数有：
-            -z : 使用gzip压缩
-            -j : 使用bzip2压缩
-            -f : 打包压缩的时候指定压缩后的文件名
-            -c : 打包文件
-            -x : 解压缩使用的
-            -v : 压缩和解压缩时候显示进度
-
-
-    打包使用gzip压缩：    tar -zcvf 压缩后的名字.tar.gz 文件1 文件2 文件3使用gzip解压缩    tar -zxvf 压缩包.tar.gz打包使用bzip2压缩    tar -jcvf 压缩后的名字.tar.bz2 文件1 文件2 文件3使用bzip2解压缩    tar -jxvf 压缩包.tar.bz2
-
-
 2、服务和进程相关指令
     linux的启动等级，打开这个文件   vi /etc/inittab
     0 : 关机等级
@@ -934,24 +490,6 @@ day09-linux
             kill -9 进程id
         netstat -lnp : 查看网络和端口使用情况
             netstat -lnp | grep 80
-
-3、shell简介(了解一下)
-    shell编程   wget url    包.tar.gz
-    python break : 终止循环
-           continue : 结束当次循环，进入下一次循环
-4、ftp服务搭建
-    ftp是什么？文件传输协议，用在将本地文件上传到服务器
-5、nfs搭建
-    nfs是什么？可以实现linux之间的文件共享
-    nfs客户端还有服务端
-6、nginx服务搭建
-    nginx是什么? web服务器   apache打交道
-    nginx服务器的根目录（www）在   /usr/local/nginx/html
-    ip:端口     域名（jd.com   baidu.com   taobao.com   mi.com）  sb.com
-    DNS服务商，阿里云、腾讯云都有
-    
-
-    一个服务器是否能放多个网站呢？可以的，配置虚拟主机
 
 ### 服务管理
 

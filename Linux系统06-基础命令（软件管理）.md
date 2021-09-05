@@ -88,15 +88,27 @@ yum是基于rpm，它的功能更加强大。
 
 ### 安装wget
 
-wget是一款Linux上的下载软件，就类似于Windows上的迅雷。
+**wget是一款Linux上的下载软件，就类似于Windows上的迅雷。**
 
-下载安装命令：`yum install wget -y`
+使用格式：`wget 参数 下载地址`
+
+- -b 后台下载模式
+- -O 下载到指定的目录
+- -r 递归下载
+
+下载安装命令：`yum install wget -y`，这里提示我已经安装过了。
 
 ![QQ截图20210904033922](Image/QQ截图20210904033922.png)
 
-这里提示我已经安装过了
-
 ### 安装nginx
+
+nginx是一款自由的、开源的、高性能的HTTP服务器和反向代理服务器，可以将我们的web应用程序部署到nginx服务器上。
+
+首先下载安装nginx依赖，执行命令：`yum install gcc-c++ pcre-devel zlib zlib-devel openssl openssl-devel`
+
+![QQ截图20210904153453](Image/QQ截图20210904153453.png)
+
+因为有许多包云服务器已经提前帮你安装好了，所以整体安装起来很快。
 
 虽然我们可以直接使用yum在线安装nginx，但为了熟悉源码安装，我们使用源码文件进行安装。首先进入nginx官网，选择版本获取下载地址：
 
@@ -112,16 +124,71 @@ wget是一款Linux上的下载软件，就类似于Windows上的迅雷。
 
 下载完成后，我们得到一个nginx的源码压缩包，使用拆包命令进行解压：`tar -zxvf nginx-1.21.2.tar.gz `
 
+!> Linux中解压不等于安装软件。
+
 ![QQ截图20210904035655](Image/QQ截图20210904035655.png)
 
+进入文件夹找到绿色的 `configure` 可执行文件，配置nginx安装目录：`./configure --prefix=/usr/local/nginx`
 
+![QQ截图20210904154238](Image/QQ截图20210904154238.png)
+
+用root用户身份执行命令进行编译安装：`make && make install`
+
+命令执行完成以后，我们去到上面配置的安装路径下：`cd /usr/local/`
+
+![QQ截图20210904154832](Image/QQ截图20210904154832.png)
+
+就会有一个nginx目录，进入nginx目录下的sbin目录，会有一个绿色的 `nginx` 可执行文件，启动nginx服务命令：`./nginx`
+
+![QQ截图20210904155413](Image/QQ截图20210904155413.png)
+
+现在我们去访问我们服务器的地址，就能看到nginx的欢迎界面：
+
+![QQ截图20210904155611](Image/QQ截图20210904155611.png)
+
+这个页面读取的是 `/usr/local/nginx/html` 下的 `index.html` 文件：
+
+![QQ截图20210904161920](Image/QQ截图20210904161920.png)
+
+现在我们自己创建一个 `test.html` 静态页面：`vim test.html`，并访问：
+
+![QQ截图20210904162457](Image/QQ截图20210904162457.png)
+
+?> 一个服务器通过配置虚拟主机可以放多个网站。
 
 ### 安装Python3
 
-下载安装命令：`yum install python3 -y`
+方便起见，直接在线下载安装命令：`yum install python3 -y`
 
 ![QQ截图20210904032239](Image/QQ截图20210904032239.png)
 
 查看版本号：`python3 -V`
 
 ![QQ截图20210904032433](Image/QQ截图20210904032433.png)
+
+### 搭建虚拟环境
+
+如果不知道什么是虚拟环境，请先参看：《Python板块》——《后端02-虚拟环境virtualenv》
+
+首先我们新建一个文件夹专门用来存储虚拟环境：`mkdir env`
+
+下面命令安装virtualenv：`pip3 install virtualenv`
+
+检查是否安装成功：`virtualenv --version`
+
+![QQ截图20210904220157](Image/QQ截图20210904220157.png)
+
+进入新建目录：`cd env`
+
+搭建新的环境：`virtualenv new_env`
+
+![QQ截图20210904220612](Image/QQ截图20210904220612.png)
+
+当前环境安装的库列表：`pip3 list`
+
+启动虚拟环境：`source new_env/bin/activate`
+
+退出当前虚拟环境：`deactivate`
+
+![QQ截图20210904221532](Image/QQ截图20210904221532.png)
+

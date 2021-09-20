@@ -1,14 +1,6 @@
-查看命令的说明和位置 - **whatis** / **which** / **whereis**。
+查看命令的说明和位置 -  / **which** / 。
 
 ```
-[root ~]# whatis ps
-ps (1)        - report a snapshot of the current processes.
-[root ~]# whatis python
-python (1)    - an interpreted, interactive, object-oriented programming language
-[root ~]# whereis ps
-ps: /usr/bin/ps /usr/share/man/man1/ps.1.gz
-[root ~]# whereis python
-python: /usr/bin/python /usr/bin/python2.7 /usr/lib/python2.7 /usr/lib64/python2.7 /etc/python /usr/include/python2.7 /usr/share/man/man1/python.1.gz
 [root ~]# which ps
 /usr/bin/ps
 [root ~]# which python
@@ -203,18 +195,6 @@ python: /usr/bin/python /usr/bin/python2.7 /usr/lib/python2.7 /usr/lib64/python2
     [root ~]$ pgrep mysqld3584
     ```
 
-2. 通过进程号终止进程 - **kill**。
-
-    ```
-    [root ~]$ kill -l 1) SIGHUP       2) SIGINT       3) SIGQUIT      4) SIGILL       5) SIGTRAP 6) SIGABRT      7) SIGBUS       8) SIGFPE       9) SIGKILL     10) SIGUSR111) SIGSEGV     12) SIGUSR2     13) SIGPIPE     14) SIGALRM     15) SIGTERM16) SIGSTKFLT   17) SIGCHLD     18) SIGCONT     19) SIGSTOP     20) SIGTSTP21) SIGTTIN     22) SIGTTOU     23) SIGURG      24) SIGXCPU     25) SIGXFSZ26) SIGVTALRM   27) SIGPROF     28) SIGWINCH    29) SIGIO       30) SIGPWR31) SIGSYS      34) SIGRTMIN    35) SIGRTMIN+1  36) SIGRTMIN+2  37) SIGRTMIN+338) SIGRTMIN+4  39) SIGRTMIN+5  40) SIGRTMIN+6  41) SIGRTMIN+7  42) SIGRTMIN+843) SIGRTMIN+9  44) SIGRTMIN+10 45) SIGRTMIN+11 46) SIGRTMIN+12 47) SIGRTMIN+1348) SIGRTMIN+14 49) SIGRTMIN+15 50) SIGRTMAX-14 51) SIGRTMAX-13 52) SIGRTMAX-1253) SIGRTMAX-11 54) SIGRTMAX-10 55) SIGRTMAX-9  56) SIGRTMAX-8  57) SIGRTMAX-758) SIGRTMAX-6  59) SIGRTMAX-5  60) SIGRTMAX-4  61) SIGRTMAX-3  62) SIGRTMAX-263) SIGRTMAX-1  64) SIGRTMAX[root ~]# kill 1234[root ~]# kill -9 1234
-    ```
-
-    例子：用一条命令强制终止正在运行的Redis进程。
-
-    ```
-    ps -ef | grep redis | grep -v grep | awk '{print $2}' | xargs kill
-    ```
-
 3. 查询后台进程 - **jobs**。
 
     ```
@@ -369,8 +349,6 @@ ifconfig：查看和设置网卡信息（eth0第一网卡，eth1第二块网卡�
 ```
 ping 192.168.1.1：测试与192.168.1.1的IP地址是否网络相通（它会一直ping，ctrl+c停止）ping -c 4 192.168.1.1：给192.168.1.1的IP地址发送4个数据包
 ```
-
-
 
 6、文件搜索
     find

@@ -104,6 +104,148 @@ umount /dev/u_disk
 
 > **说明**：执行上面这些命令会带有一定的风险，如果不清楚这些命令的用法，最好不用随意使用，在使用的过程中，最好对照参考资料进行操作，并在操作前确认是否要这么做。
 
+## 配置服务
+
+我们可以Linux系统下安装和配置各种服务，也就是说我们可以把Linux系统打造成数据库服务器、Web服务器、缓存服务器、文件服务器、消息队列服务器等等。**Linux下的大多数服务都被设置为守护进程（驻留在系统后台运行，但不会因为服务还在运行而导致Linux无法停止运行），所以我们安装的服务通常名字后面都有一个字母`d`，它是英文单词`daemon`的缩写。**例如：防火墙服务叫firewalld，MySQL服务叫mysqld，Apache服务器叫httpd等。
+
+### 常用参数
+
+在安装好服务之后，可以使用 `systemctl` 命令或 `service` 命令来完成对服务的启动、停止等操作，这里我们不用深究两个命令之间的区别，只需要记住一个命令及其常用参数即可，具体操作如下所示。
+
+查看所有的服务 - **systemctl**
+
+![QQ截图20210926023333](Image/QQ截图20210926023333.png)
+
+系统默认启动的服务是非常多的，上图只截取了前面几行。下面是对输出的介绍：
+
+UNIT：项目的名称，包括各个 unit 的类别(看扩展名)。
+
+LOAD：开机时 unit 的配置是否被加载。
+
+ACTIVE：目前的状态，须与后续的 SUB 搭配！就是我们用 systemctl status 观察时，active的内容。
+
+DESCRIPTION：描述信息。
+
+查看系统服务状态 - **systemctl list-unit-files**
+
+![QQ截图20210926024014](Image/QQ截图20210926024014.png)
+
+结果也非常的多，我们仍然只截取一部分结果。**这里的 STATE 就是我们前面介绍的服务的启动状态，static表示该服务与其他服务相关联,不能单独设置该服务的启动状态，disabled表示禁止开机启动，enabled表示允许开机启动。**
+
+systemctl 提供了一组子命令来管理单个的服务，其命令格式为：**systemctl 选项 服务名称**
+
+```
+查看服务状态
+systemctl status 服务名称
+
+列出服务配置
+systemctl show 服务名称
+
+启动服务
+systemctl start 服务名称
+
+终止服务
+systemctl stop 服务名称
+
+重启服务
+systemctl restart 服务名称
+
+设置下次开机时启动
+systemctl enable 服务名称
+
+设置下次开机时不启动
+systemctl disable 服务名称
+
+注销服务（注销后就无法再启动该服务了）
+systemctl mask 服务名称
+
+取消对服务的注销
+systemctl unmask 服务名称
+```
+
+### 防火墙服务
+
+1. 启动防火墙服务。
+
+    ```
+    [root ~]# systemctl start firewalld
+    ```
+
+2. 终止防火墙服务。
+
+    ```
+    [root ~]# systemctl stop firewalld
+    ```
+
+3. 重启防火墙服务。
+
+    ```
+    [root ~]# systemctl restart firewalld
+    ```
+
+4. 查看防火墙服务状态。
+
+    ```
+    [root ~]# systemctl status firewalld
+    ```
+
+
+![QQ截图20210926022228](Image/QQ截图20210926022228.png)
+
+输出内容的第一行是对 unit 的基本描述。
+
+第二行中的 Loaded 描述操作系统启动时会不会启动这个服务，enabled 表示开机时启动，disabled 表示开机时不启动。而启动该服务的配置文件路径为：`/lib/systemd/system/firewalld.service`。
+
+第三行 中的 Active 描述服务当前的状态，active (running) 表示服务正在运行中。如果是 inactive (dead) 则表示服务当前没有运行。后面则是服务的启动时间。
+
+第四行的 Docs 提供了在线文档的地址。
+
+第五行的 Main PID 表示进程的 ID，接下来是任务的数量，占用的内存和 CPU 资源。
+
+第六行的 Cgroup 描述的是 cgrpup 相关的信息，笔者会在后续的文章中详细的介绍。
+
+最后是输出的日志信息。
+
+## 计划任务
+
+1. 在指定的时间执行命令。
+
+    - **at** - 将任务排队，在指定的时间执行。
+    - **atq** - 查看待执行的任务队列。
+    - **atrm** - 从队列中删除待执行的任务。
+
+    指定3天以后下午5点要执行的任务。
+
+    ```
+    [root ~]# at 5pm+3daysat> rm -f /root/*.htmlat> <EOT>job 9 at Wed Jun  5 17:00:00 2019
+    ```
+
+    查看待执行的任务队列。
+
+    ```
+    [root ~]# atq9       Wed Jun  5 17:00:00 2019 a root
+    ```
+
+    从队列中删除指定的任务。
+
+    ```
+    [root ~]$ atrm 9
+    ```
+
+2. 计划任务表 - **crontab**。
+
+    ```
+    [root ~]# crontab -e* * * * * echo "hello, world!" >> /root/hello.txt59 23 * * * rm -f /root/*.log
+    ```
+
+    > 说明：输入`crontab -e`命令会打开vim来编辑Cron表达式并指定触发的任务，上面我们定制了两个计划任务，一个是每分钟向/root目录下的hello.txt中追加输出`hello, world!`；另一个是每天23时59分执行删除/root目录下以log为后缀名的文件。如果不知道Cron表达式如何书写，可以参照/etc/crontab文件中的提示（下面会讲到）或者用搜索引擎找一下“Cron表达式在线生成器”来生成Cron表达式。
+
+    和crontab相关的文件在`/etc`目录下，通过修改`/etc`目录下的crontab文件也能够定制计划任务。
+
+    ```
+    [root ~]# cd /etc[root etc]# ls -l | grep cron-rw-------.  1 root root      541 Aug  3  2017 anacrontabdrwxr-xr-x.  2 root root     4096 Mar 27 11:56 cron.ddrwxr-xr-x.  2 root root     4096 Mar 27 11:51 cron.daily-rw-------.  1 root root        0 Aug  3  2017 cron.denydrwxr-xr-x.  2 root root     4096 Mar 27 11:50 cron.hourlydrwxr-xr-x.  2 root root     4096 Jun 10  2014 cron.monthly-rw-r--r--   1 root root      493 Jun 23 15:09 crontabdrwxr-xr-x.  2 root root     4096 Jun 10  2014 cron.weekly[root etc]# vim crontab  1 SHELL=/bin/bash  2 PATH=/sbin:/bin:/usr/sbin:/usr/bin  3 MAILTO=root  4  5 # For details see man 4 crontabs  6  7 # Example of job definition:  8 # .---------------- minute (0 - 59)  9 # |  .------------- hour (0 - 23) 10 # |  |  .---------- day of month (1 - 31) 11 # |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ... 12 # |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat 13 # |  |  |  |  | 14 # *  *  *  *  * user-name  command to be executed
+    ```
+
 ## 进程管理
 
 Linux中进程的基本知识点：

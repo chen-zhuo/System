@@ -1,128 +1,3 @@
-查看命令的说明和位置 -  / **which** / 。
-
-```
-[root ~]# which ps
-/usr/bin/ps
-[root ~]# which python
-/usr/bin/python
-```
-
-1. 查找文件和查找内容 - **find** / **grep**。
-
-    > **说明**：`grep`在搜索字符串时可以使用正则表达式，如果需要使用正则表达式可以用`grep -E`或者直接使用`egrep`。
-
-#### 管道和重定向
-
-1. 管道的使用 - **|**。
-
-    例子：查找当前目录下文件个数。
-
-    ```
-    [root ~]# find ./ | wc -l6152
-    ```
-
-    例子：列出当前路径下的文件和文件夹，给每一项加一个编号。
-
-    ```
-    [root ~]# ls | cat -n     1  dump.rdb     2  mongodb-3.6.5     3  Python-3.6.5     4  redis-3.2.11     5  redis.conf
-    ```
-
-    例子：查找record.log中包含AAA，但不包含BBB的记录的总数
-
-    ```
-    [root ~]# cat record.log | grep AAA | grep -v BBB | wc -l
-    ```
-
-2. 别名
-
-
-1. **alias**
-
-    ```
-    [root ~]# alias ll='ls -l'[root ~]# alias frm='rm -rf'[root ~]# ll...drwxr-xr-x  2 root       root   4096 Jun 20 12:52 abc...[root ~]# frm abc
-    ```
-
-2. **unalias**
-
-    ```
-    [root ~]# unalias frm[root ~]# frm sohu.html-bash: frm: command not found
-    ```
-
-
-### 配置服务
-
-我们可以Linux系统下安装和配置各种服务，也就是说我们可以把Linux系统打造成数据库服务器、Web服务器、缓存服务器、文件服务器、消息队列服务器等等。Linux下的大多数服务都被设置为守护进程（驻留在系统后台运行，但不会因为服务还在运行而导致Linux无法停止运行），所以我们安装的服务通常名字后面都有一个字母`d`，它是英文单词`daemon`的缩写，例如：防火墙服务叫firewalld，我们之前安装的MySQL服务叫mysqld，Apache服务器叫httpd等。在安装好服务之后，可以使用`systemctl`命令或`service`命令来完成对服务的启动、停止等操作，具体操作如下所示。
-
-1. 启动防火墙服务。
-
-    ```
-    [root ~]# systemctl start firewalld
-    ```
-
-2. 终止防火墙服务。
-
-    ```
-    [root ~]# systemctl stop firewalld
-    ```
-
-3. 重启防火墙服务。
-
-    ```
-    [root ~]# systemctl restart firewalld
-    ```
-
-4. 查看防火墙服务状态。
-
-    ```
-    [root ~]# systemctl status firewalld
-    ```
-
-5. 设置/禁用防火墙服务开机自启。
-
-    ```
-    [root ~]# systemctl enable firewalldCreated symlink from /etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service to /usr/lib/systemd/system/firewalld.service.Created symlink from /etc/systemd/system/multi-user.target.wants/firewalld.service to /usr/lib/systemd/system/firewalld.service.[root ~]# systemctl disable firewalldRemoved symlink /etc/systemd/system/multi-user.target.wants/firewalld.service.Removed symlink /etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service.
-    ```
-
-### 计划任务
-
-1. 在指定的时间执行命令。
-
-    - **at** - 将任务排队，在指定的时间执行。
-    - **atq** - 查看待执行的任务队列。
-    - **atrm** - 从队列中删除待执行的任务。
-
-    指定3天以后下午5点要执行的任务。
-
-    ```
-    [root ~]# at 5pm+3daysat> rm -f /root/*.htmlat> <EOT>job 9 at Wed Jun  5 17:00:00 2019
-    ```
-
-    查看待执行的任务队列。
-
-    ```
-    [root ~]# atq9       Wed Jun  5 17:00:00 2019 a root
-    ```
-
-    从队列中删除指定的任务。
-
-    ```
-    [root ~]$ atrm 9
-    ```
-
-2. 计划任务表 - **crontab**。
-
-    ```
-    [root ~]# crontab -e* * * * * echo "hello, world!" >> /root/hello.txt59 23 * * * rm -f /root/*.log
-    ```
-
-    > 说明：输入`crontab -e`命令会打开vim来编辑Cron表达式并指定触发的任务，上面我们定制了两个计划任务，一个是每分钟向/root目录下的hello.txt中追加输出`hello, world!`；另一个是每天23时59分执行删除/root目录下以log为后缀名的文件。如果不知道Cron表达式如何书写，可以参照/etc/crontab文件中的提示（下面会讲到）或者用搜索引擎找一下“Cron表达式在线生成器”来生成Cron表达式。
-
-    和crontab相关的文件在`/etc`目录下，通过修改`/etc`目录下的crontab文件也能够定制计划任务。
-
-    ```
-    [root ~]# cd /etc[root etc]# ls -l | grep cron-rw-------.  1 root root      541 Aug  3  2017 anacrontabdrwxr-xr-x.  2 root root     4096 Mar 27 11:56 cron.ddrwxr-xr-x.  2 root root     4096 Mar 27 11:51 cron.daily-rw-------.  1 root root        0 Aug  3  2017 cron.denydrwxr-xr-x.  2 root root     4096 Mar 27 11:50 cron.hourlydrwxr-xr-x.  2 root root     4096 Jun 10  2014 cron.monthly-rw-r--r--   1 root root      493 Jun 23 15:09 crontabdrwxr-xr-x.  2 root root     4096 Jun 10  2014 cron.weekly[root etc]# vim crontab  1 SHELL=/bin/bash  2 PATH=/sbin:/bin:/usr/sbin:/usr/bin  3 MAILTO=root  4  5 # For details see man 4 crontabs  6  7 # Example of job definition:  8 # .---------------- minute (0 - 59)  9 # |  .------------- hour (0 - 23) 10 # |  |  .---------- day of month (1 - 31) 11 # |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ... 12 # |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat 13 # |  |  |  |  | 14 # *  *  *  *  * user-name  command to be executed
-    ```
-
 ### 网络访问和管理
 
 1. 安全远程连接 - **ssh**。
@@ -130,8 +5,6 @@
     ```
     [root ~]$ ssh root@120.77.222.217The authenticity of host '120.77.222.217 (120.77.222.217)' can't be established.ECDSA key fingerprint is SHA256:BhUhykv+FvnIL03I9cLRpWpaCxI91m9n7zBWrcXRa8w.ECDSA key fingerprint is MD5:cc:85:e9:f0:d7:07:1a:26:41:92:77:6b:7f:a0:92:65.Are you sure you want to continue connecting (yes/no)? yesWarning: Permanently added '120.77.222.217' (ECDSA) to the list of known hosts.root@120.77.222.217's password: 
     ```
-
-    
 
 4. 网络配置工具（旧） - **ifconfig**。
 
@@ -348,49 +221,6 @@ ifconfig：查看和设置网卡信息（eth0第一网卡，eth1第二块网卡�
 
 ```
 ping 192.168.1.1：测试与192.168.1.1的IP地址是否网络相通（它会一直ping，ctrl+c停止）ping -c 4 192.168.1.1：给192.168.1.1的IP地址发送4个数据包
-```
-
-6、文件搜索
-    find
-    用法如下：
-    find   在哪找   怎么找   找什么
-    在哪找：就是一个路径，默认是当前路径
-    怎么找：按照名字、大小、用户，其实就是参数
-        -name : 按照名字找
-        -size : 按照大小找
-        -user : 按照用户找
-        -group : 按照组找
-        -maxdepth : 查找最大目录级别
-        -mindepth : 查找最小目录级别
-    找什么：1.mp3  *.txt
-
-    find / -name dudu.pyfind / -size 10k     等于10k的文件             +10k     大于10k的文件            -10k     小于10k的文件find / *.txt -user liuyanfind / -maxdepth 3 -mindepth 2 -name *.txt  找指定级别的文件
-
-day09-linux
-
-1、文件内容搜索
-    grep 内容 文件路径
-    参数：
-    -i ：忽略大小写
-    --color=auto : 颜色自动提示，将grep设置为默认颜色提示，其实就是可以给grep指令器别名
-        vi ~/.bashrc
-        添加一句  alias grep='grep --color=auto'
-        source ~/.bashrc
-    -n : 显示内容出现的行号
-    -l : 显示内容出现的文件名
-    -c : 显示出现该内容的次数
-
-    也可以写正则表达式, 注意使用 -P    13838384380    \d{11}    ^1\d{10}    3456789    ^1[3-9]\d{9}    test@qq.com   duduxixi@163.com  lalahehe@sina.cn    \w+@\w+\.(com|cn|net)grep 王者荣耀 1.txtgrep 王者荣耀 *.txtgrep 王者荣耀 ~/.txtgrep -P '1[3-9]\d{9}' 3.txt 
-
-2、管道
-    格式： 指令1 | 指令2
-    指令1的输出作为指令2的输入，指令2的输出显示到屏幕中
-    常用的管道指令有：
-        ls -l /etc | less
-        ls -l /etc | head -5
-        ls -l /etc | tail -5
-        ls -l /etc | head -10 | tail -5
-        ls -l /etc | grep 找的内容
 3、搭建主机信任
     密码学的内容，加密-解密，用到一个东西  秘钥
     加密-解密秘钥相同-对称加解密
@@ -429,6 +259,7 @@ day09-linux
     5 : 界面模式
     6 : 重启模式
     
+```
 
     切换等级   init 0   init 1   init 6
     查看当前等级  runlevel   who -r

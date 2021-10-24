@@ -170,6 +170,32 @@ pause
 
 ![QQ截图20210326235152](Image/QQ截图20210326235152.png)
 
+### 起别名
+
+在某个目录下（建议在C盘根目录）新建文件 `cmd_auto.bat` , 输入自己需要的常用命令的别名。下面是我的常用命令：
+
+```
+@echo off
+doskey ls=dir /b $*
+doskey act=activate tensorflow-gpu $*
+doskey tb=tensorboard --logdir $*
+doskey pi=pip install $*
+```
+
+说明：
+doskey相当于Linux中的alias，等号左边是右边的别名；
+$*表示这个命令还可能有其他参数；
+
+**修改注册表，使cmd启动时自动执行该bat文件**：win+r，键入regedit，进入地址：`计算机\HKEY_CURRENT_USER\Software\Microsoft\Command Processor` 右边空白处右键新建->字符串值。
+
+![QQ截图20211024220250](Image/QQ截图20211024220250.png)
+
+双击编辑该值，随便起个名字（比如AutoRun），数值数据里填刚才新建的bat文件的路径（我的是C:\cmd_auto.bat）
+
+![QQ截图20211024220401](Image/QQ截图20211024220401.png)
+
+确定后重起命令行，别名就可以用啦。
+
 ## 逻辑批处理
 
 ### if-else结结构

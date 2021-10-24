@@ -79,20 +79,20 @@ ping -c 4 IP地址：给指定的IP地址发送4个数据包
 
 网络监听抓包 - **tcpdump**
 
-### 文件传输
+## 文件传输
 
-安全文件拷贝 - **scp**
+安全文件拷贝 - **scp 参数**
+
+- **-r** - 拷贝文件夹
+
+**scp是基于ssh协议在两台linux之间拷贝文件的命令，前提是需要知道目标主机的IP地址和用户名及其对应的用户密码。**
 
 ```
-scp：基于ssh的cp，cp是实现本机之间来回拷贝，scp在两台linux之间进行拷贝
-scp的用法：
-    scp 源路径 目标路径
-    scp 1.txt root@ip地址:路径
-    如果发送文件夹，需要添加 -r 选项
-linux和linux之间使用scp进行互发，如果搭建了主机信任，不用输入密码
-winscp，实现windows和linux之间使用scp进行互发
-    安装，使用即可，左边：windows目录，右边：linux目录，相互拖动即可    
-[root ~]# scp root@1.2.3.4:/root/guido.jpg hellokitty@4.3.2.1:/home/hellokitty/pic.jpg
+格式：
+scp /路径/文件名称 用户@IP地址:/路径/文件名称
+
+例子：将本机/usr下的file1.txt文件拷贝至目标主机tmp下并重命名为file2.txt，执行命令后需要输入root登录172.19.216.195主机的密码
+scp /usr/file1.txt root@172.19.216.195:/tmp/file2.txt
 ```
 
 文件同步工具 - **rsync**

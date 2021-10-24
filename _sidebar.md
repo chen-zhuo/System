@@ -12,5 +12,5 @@
   - [Linux系统06-户组管理](Linux系统06-户组管理.md)
   - [Linux系统07-软件管理](Linux系统07-软件管理.md)
   - [Linux系统08-系统操作](Linux系统08-系统操作.md)
-  - [Linux系统09-网络传输](Linux系统09-网络传输.md)
+  - [Linux系统09-网络访问](Linux系统09-网络访问.md)
   - [Linux系统10-拓展认识](Linux系统10-拓展认识.md)

@@ -46,6 +46,9 @@ yum install 软件名
 # 在线安装软件，自动解决依赖，安装过程一路默认yes
 yum install 软件名 -y
 
+# 在线安装软件，自动解决依赖，指定安装路径（基本都为/usr/local/软件名称），需要新建软链接和拷贝库
+yum -c /etc/yum.conf --installroot=/usr/local/软件名 --releasever=/ install 软件名 -y
+
 # 只下载安装包，不安装
 yum install -y --downloadonly --downloaddir=路径 包名 
 
@@ -86,6 +89,26 @@ yum是基于rpm，它的功能更加强大。
 
 ## 安装软件
 
+### 安装tmux
+
+tmux是指通过一个终端登录远程主机并运行后，在其中可以开启多个控制台的终端复用软件。
+
+安装命令：`yum -c /etc/yum.conf --installroot=/usr/local/tmux --releasever=/ install tmux -y`
+
+![QQ截图20211028173508](Image/QQ截图20211028173508.png)
+
+安装成功后，就会在指定的安装路径下生成文件夹：
+
+![QQ截图20211028173708](Image/QQ截图20211028173708.png)
+
+通过上面命令安装好了以后，还不能马上使用，**原因会在最下面有讲解**，还需要在/usr/bin下新建一个软链接文件指向tmux的执行文件：
+
+```
+ln -s tmux执行文件路径 /usr/bin/tmux
+```
+
+![QQ截图20211028175218](Image/QQ截图20211028175218.png)
+
 ### 安装wget
 
 **wget是一款Linux上的下载软件，就类似于Windows上的迅雷。**
@@ -99,6 +122,14 @@ yum是基于rpm，它的功能更加强大。
 下载安装命令：`yum install wget -y`，这里提示我已经安装过了。
 
 ![QQ截图20210904033922](Image/QQ截图20210904033922.png)
+
+### 安装dokcer
+
+Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的镜像中，然后发布到任何流行的 Linux或Windows操作系统的机器上。
+
+安装命令：`yum install docker -y`
+
+
 
 ### 安装nginx
 
@@ -193,4 +224,60 @@ nginx是一款自由的、开源的、高性能的HTTP服务器和反向代理�
 退出当前虚拟环境：`deactivate`
 
 ![QQ截图20210904221532](Image/QQ截图20210904221532.png)
+
+## 常见问题
+
+### 缺少库
+
+通过指定路径的命令安装好了软件，运行命令后会提示缺少某某库：
+
+![QQ截图20211028175903](Image/QQ截图20211028175903.png)
+
+其实该库已经存在，是没有被拷贝到/usr/lib64路径下：
+
+```
+# 我们通过全局搜索找库文件
+find / -name 库文件
+# 拷贝至/usr/lib64路径下
+cp /库文件路径 /usr/lib64
+```
+
+![QQ截图20211028180410](Image/QQ截图20211028180410.png)
+
+### 默认Python
+
+在Linux当中都为我们默认安装了Python2，在命令行中输入命令 `python` 即可启动Python2的环境：
+
+![QQ截图20211028162824](Image/QQ截图20211028162824.png)
+
+为什么命令 `python` 启动是Python2的环境，而不是前面我们安装的Python3的环境。**这是因为在Linux当中输入命令 `python` 实际上是读取/usr/bin/python软链接文件，该文件指向python2，而python2又是一个指向python2.7的软链接文件。**
+
+![QQ截图20211028163933](Image/QQ截图20211028163933.png)
+
+现在我们安装了最常用的Python3，现在希望输入命令 `python` 启动的是Python3的环境，可以如下操作：
+
+```
+# 删除软连接文件python
+rm -rf /usr/bin/python
+# 新建一个软连接文件python指向我们安装的python3
+ln -s python3的执行文件路径 /usr/bin/python
+```
+
+![QQ截图20211028164932](Image/QQ截图20211028164932.png)
+
+注意当我们修改了软链接后，在使用yum命令会出现如下错误：
+
+![QQ截图20211028171813](Image/QQ截图20211028171813.png)
+
+看错误，发现是该文件的语法错误，**首先有一点可以肯定的是，yum命令肯定调用了该文件，打开该文件发现文件内容使用的Python2的语法，看第一行的路径文件就是我们刚刚新建的软链接文件**：
+
+![QQ截图20211028172424](Image/QQ截图20211028172424.png)
+
+这里我们应该就能明白什么原因导致了问题的出现，归纳一下就是：**因为python命令的软链接文件现在指向的是python3，导致yum命令调用Python2语法文件报错，解决办法也很简单，直接将第一行代码改为指向现有的python2的软链接。**
+
+```
+#!/usr/bin/python2
+```
+
+同样的 `/usr/libexec/urlgrabber-ext-down` 文件也会报相同的错，解决方式和上面一样。
 

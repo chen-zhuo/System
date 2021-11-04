@@ -89,9 +89,9 @@ yum是基于rpm，它的功能更加强大。
 
 ## 安装软件
 
-### 安装tmux
+### 安装Tmux
 
-tmux是指通过一个终端登录远程主机并运行后，在其中可以开启多个控制台的终端复用软件。
+Tmux是指通过一个终端登录远程主机并运行后，在其中可以开启多个控制台的终端复用软件。
 
 安装命令：`yum -c /etc/yum.conf --installroot=/usr/local/tmux --releasever=/ install tmux -y`
 
@@ -101,7 +101,7 @@ tmux是指通过一个终端登录远程主机并运行后，在其中可以开�
 
 ![QQ截图20211028173708](Image/QQ截图20211028173708.png)
 
-通过上面命令安装好了以后，还不能马上使用，**原因会在最下面有讲解**，还需要在/usr/bin下新建一个软链接文件指向tmux的执行文件：
+通过上面命令安装好了以后，还不能马上使用，**原因会在最下面有讲解**，还需要在/usr/bin下新建一个软链接文件指向Tmux的执行文件：
 
 ```
 ln -s tmux执行文件路径 /usr/bin/tmux
@@ -109,9 +109,9 @@ ln -s tmux执行文件路径 /usr/bin/tmux
 
 ![QQ截图20211028175218](Image/QQ截图20211028175218.png)
 
-### 安装wget
+### 安装Wget
 
-**wget是一款Linux上的下载软件，就类似于Windows上的迅雷。**
+**Wget是一款Linux上的下载软件，就类似于Windows上的迅雷。**
 
 使用格式：`wget 参数 下载地址`
 
@@ -123,31 +123,31 @@ ln -s tmux执行文件路径 /usr/bin/tmux
 
 ![QQ截图20210904033922](Image/QQ截图20210904033922.png)
 
-### 安装docker
+### 安装Docker
 
-docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的镜像中，然后发布到任何流行的 Linux或Windows操作系统的机器上。
+Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的镜像中，然后发布到任何流行的 Linux或Windows操作系统的机器上。
 
-docker要求CentOS系统的内核版本等于或高于 3.10 ，通过 `uname -r` 命令查看你当前的内核版本是否支持安装。
+Docker要求CentOS系统的内核版本等于或高于 3.10 ，通过 `uname -r` 命令查看你当前的内核版本是否支持安装。
 
 ![QQ截图20211029103338](Image/QQ截图20211029103338.png)
 
-docker安装命令：`yum install docker -y`
+Docker安装命令：`yum install docker -y`
 
 ![QQ截图20211029103849](Image/QQ截图20211029103849.png)
 
-查看docker服务状态：`systemctl status docker`
+查看Docker服务状态：`systemctl status docker`
 
 ![QQ截图20211029105009](Image/QQ截图20211029105009.png)
 
-设置docker服务为开机自启：`systemctl enable docker`
+设置Docker服务为开机自启：`systemctl enable docker`
 
 ![QQ截图20211029105229](Image/QQ截图20211029105229.png)
 
-启动docker服务：`systemctl start docker`
+启动Docker服务：`systemctl start docker`
 
 ![QQ截图20211029105354](Image/QQ截图20211029105354.png)
 
-### 安装redis
+### 安装Redis
 
 Redis是一种基于键值对[丰富的数据结构]、单线程+内存[高性能]、持久化、分布式、开源的非关系型（NoSQL）数据库。
 
@@ -155,11 +155,11 @@ redis安装命令：`yum install redis -y`
 
 ![QQ截图20211029110947](Image/QQ截图20211029110947.png)
 
-查看reids版本：`redis-server安装路径 --version`
+查看Reids版本：`redis-server安装路径 --version`
 
 ![QQ截图20211029111144](Image/QQ截图20211029111144.png)
 
-同样设置redis的服务：
+同样设置Redis的服务：
 
 ```
 # 查看redis服务状态
@@ -174,19 +174,19 @@ systemctl start redis
 
 ![QQ截图20211029111727](Image/QQ截图20211029111727.png)
 
-?> 关于redis的启动方式以及密码配置，参看《DataBase》的《[Redis02-启动、连接、配置、关闭](https://chen-zhuo.github.io/DataBase/#/Redis02-启动、连接、配置、关闭)》。
+?> 关于Redis的启动方式以及密码配置，参看《DataBase》的《[Redis02-启动、连接、配置、关闭](https://chen-zhuo.github.io/DataBase/#/Redis02-启动、连接、配置、关闭)》。
 
-### 安装nginx
+### 安装Nginx
 
-nginx是一款自由的、开源的、高性能的HTTP服务器和反向代理服务器，可以将我们的web应用程序部署到nginx服务器上。
+Nginx是一款自由的、开源的、高性能的HTTP服务器和反向代理服务器，可以将我们的web应用程序部署到Nginx服务器上。
 
-首先下载安装nginx依赖，执行命令：`yum install gcc-c++ pcre-devel zlib zlib-devel openssl openssl-devel`
+首先下载安装Nginx依赖，执行命令：`yum install gcc-c++ pcre-devel zlib zlib-devel openssl openssl-devel`
 
 ![QQ截图20210904153453](Image/QQ截图20210904153453.png)
 
 因为有许多包云服务器已经提前帮你安装好了，所以整体安装起来很快。
 
-虽然我们可以直接使用yum在线安装nginx，但为了熟悉源码安装，我们使用源码文件进行安装。首先进入nginx官网，选择版本获取下载地址：
+虽然我们可以直接使用yum在线安装Nginx，但为了熟悉源码安装，我们使用源码文件进行安装。首先进入Nginx官网，选择版本获取下载地址：
 
 ![QQ截图20210904034427](Image/QQ截图20210904034427.png)
 
@@ -194,11 +194,11 @@ nginx是一款自由的、开源的、高性能的HTTP服务器和反向代理�
 
 这里我就不下载到我本机的Windows，因为下载地址的最后几位就可以看出，这是一个在Linux上使用的 `.tar.gz` 压缩文件。
 
-直接在Linux当中使用wget通过下载地址进行下载：`wget http://nginx.org/download/nginx-1.21.2.tar.gz`
+直接在Linux当中使用Wget通过下载地址进行下载：`wget http://nginx.org/download/nginx-1.21.2.tar.gz`
 
 ![QQ截图20210904035007](Image/QQ截图20210904035007.png)
 
-下载完成后，我们得到一个nginx的源码压缩包，使用拆包命令进行解压：`tar -zxvf nginx-1.21.2.tar.gz `
+下载完成后，我们得到一个Nginx的源码压缩包，使用拆包命令进行解压：`tar -zxvf nginx-1.21.2.tar.gz `
 
 !> Linux中解压不等于安装软件。
 
@@ -214,11 +214,11 @@ nginx是一款自由的、开源的、高性能的HTTP服务器和反向代理�
 
 ![QQ截图20210904154832](Image/QQ截图20210904154832.png)
 
-就会有一个nginx目录，进入nginx目录下的sbin目录，会有一个绿色的 `nginx` 可执行文件，启动nginx服务命令：`./nginx`
+就会有一个Nginx目录，进入Nginx目录下的sbin目录，会有一个绿色的 `nginx` 可执行文件，启动nginx服务命令：`./nginx`
 
 ![QQ截图20210904155413](Image/QQ截图20210904155413.png)
 
-现在我们去访问我们服务器的地址，就能看到nginx的欢迎界面：
+现在我们去访问我们服务器的地址，就能看到Nginx的欢迎界面：
 
 ![QQ截图20210904155611](Image/QQ截图20210904155611.png)
 
@@ -329,15 +329,15 @@ ln -s python3的执行文件路径 /usr/bin/python
 
 ## 软件使用
 
-### 使用tmux
+### 使用Tmux
 
-前面已经简短的介绍过，tmux是指通过一个终端登录远程主机并运行后，在其中可以开启多个控制台的终端复用软件。
+前面已经简短的介绍过，Tmux是指通过一个终端登录远程主机并运行后，在其中可以开启多个控制台的终端复用软件。
 
 ![v2-db653263217b198cf88f20c395a8358f_1440w](Image/v2-db653263217b198cf88f20c395a8358f_1440w.png)
 
-通常我们在终端中操作一个任务的时候，一旦终端关闭，任务也就结束了，被强制关闭了，在 tmux 中使用 session（会话）就可以解决这个问题，我们可以把当前操作的任务隐藏起来，在视觉上让它消失，任务继续执行着，当我们想返回任务做一些操作的时候，它可以很方便的回来，我们通常把上面的操作就做 session 操作，我们可以把 session 给隐藏起来，我们也可以把 session 给真的关掉。
+通常我们在终端中操作一个任务的时候，一旦终端关闭，任务也就结束了，被强制关闭了，在Tmux中使用 session（会话）就可以解决这个问题，我们可以把当前操作的任务隐藏起来，在视觉上让它消失，任务继续执行着，当我们想返回任务做一些操作的时候，它可以很方便的回来，我们通常把上面的操作就做 session 操作，我们可以把 session 给隐藏起来，我们也可以把 session 给真的关掉。
 
-在 tmux 中有一个Window（窗口）的概念，我们可以这样要去理解：当前呈现在我们面前的这一个工作区域就是一个窗口（当前的终端界面），窗口可以被不断切割，切割成一个个小块，这一个个小块我们叫做pane（窗格），这就是窗口和窗格的概念，我们把它想象成一块大蛋糕可以切成很多小块蛋糕，窗口可以被分割成很多小的窗格。
+在Tmux中有一个Window（窗口）的概念，我们可以这样要去理解：当前呈现在我们面前的这一个工作区域就是一个窗口（当前的终端界面），窗口可以被不断切割，切割成一个个小块，这一个个小块我们叫做pane（窗格），这就是窗口和窗格的概念，我们把它想象成一块大蛋糕可以切成很多小块蛋糕，窗口可以被分割成很多小的窗格。
 
 **Tmux 的快捷键都必须在会话窗口里面才会生效，且都要通过默认前缀键 `Ctrl+b` 唤起。即先按下`Ctrl+b`，快捷键才会生效。**举例来说，帮助命令的快捷键是`Ctrl+b ?`，先按下`Ctrl+b`，**松开后**，再按下`?`，就会显示帮助信息。然后，按下 ESC 键或`q`键，就可以退出帮助。
 
@@ -413,9 +413,9 @@ ln -s python3的执行文件路径 /usr/bin/python
 
 ![QQ截图20211029163854](Image/QQ截图20211029163854.png)
 
-### 使用docker
+### 使用Docker
 
-docker 是一个用go语言开发的开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的镜像中，然后发布到任何流行的 Linux或Windows操作系统的机器上。
+Docker 是一个用go语言开发的开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的镜像中，然后发布到任何流行的 Linux或Windows操作系统的机器上。
 
 ![bg2018020901](Image/bg2018020901.png)
 
@@ -425,117 +425,252 @@ docker 是一个用go语言开发的开源的应用容器引擎，让开发者�
 
 如果某些老旧的模块与当前环境不兼容，那就麻烦了。环境配置如此麻烦，换一台机器，就要重来一次，旷日费时。很多人想到，能不能从根本上解决问题，让软件可以带环境安装，也就是说，安装的时候，把原始环境一模一样地复制过来。
 
-使用dockers前，首先要理解三个概念：
+#### Dockerfile文件
 
-1. **容器**：即独立运行的一个或一组应用，及他们的运行环境。
-2. 
+首先，在安装有Docker服务器中的项目根目录下新建一个 `Dockerfile` 文件，这是Docker的核心文件，常用的字段如下：
 
-首先，将一台安装有docker的服务器建立自己的一个容器：
+```bash
+FROM <image>:<tag> # 表示用哪个基础镜像去构建新的镜像，并且必须是第一条指令。
+
+MAINTAINER <name> # 指定作者
+
+RUN <command> # 后边直接跟shell命令，在linux上 /bin/sh -c，在windows上cmd /S /C
+RUN ["executable", "param1", "param2"] # 类似函数调用，executable可执行文件，后面就是两个参数
+# 注意：多行命令不要写多个RUN，原因是Dockerfile中每一个指令都会建立一层，多少个RUN就构建了多少层镜像，会造成镜像的臃肿、多层，不仅仅增加了构件部署的时间，还容易出错。RUN书写时的换行符是\
+
+ENV <key> <value> ... # 设置环境变量，一次只能设置一个
+ENV <key>=<value> ... # 设置环境变量，可以一次设置多个
+
+ADD ["<src>",... "<dest>"]# 一个复制命令，把文件复制到景象中。<dest>路径的填写可以是容器内的绝对路径，也可以是相对于工作目录的相对路径。<src>可以是一个本地文件或者是一个本地压缩文件，还可以是一个url，如果把<src>写成一个url，那么ADD就类似于wget命令
+
+VOLUME /dir # 可实现挂载功能，可以将内地文件夹或者其他容器中得文件夹挂载到这个容器中
+
+EXPOSE 端口号 # 暴漏容器运行时的监听端口给外部，但是并不会使容器访问主机的端口，如果想使得容器与主机的端口有映射关系，必须在容器启动的时候加上-P参数
+
+WORKDIR /path/to/workdir # 设置工作目录，如果不存在则会创建，也可以设置多次。
+WORKDIR /a
+WORKDIR b
+WORKDIR c
+RUN pwd # pwd执行的结果是/a/b/c
+
+ENTRYPOINT command param1 param2 # 表示容器启动后默认执行的命令，shell形式
+ENTRYPOINT ["executable", "param1", "param2"] # 表示容器启动后默认执行的命令，可执行文件加参数形式
+```
+
+基于Centos构建Python3运行环境内容如下，可根据自身需求增减：
+
+```bash
+##############################################
+# 基于centos构建python3运行环境
+# 构建命令: 在Dockerfile文件目录下执行 docker build -t data_server .
+# 容器启动命令: docker run -it --net=host images_id
+# 进入容器：docker exec -it py_admin /bin/bash
+# docker update -m 8000M --memory-swap 8000M  897a6a09807a
+##############################################
+FROM centos:7.6.1810 # 基础环境
+MAINTAINER ZhangSan # 指定作者信息
+
+RUN set -ex \
+    # 预安装所需组件
+    && yum install -y wget tar libffi-devel zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc make initscripts \
+    && wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tgz \
+    && tar -zxvf Python-3.7.0.tgz \
+    && cd Python-3.7.0 \
+    && ./configure prefix=/usr/local/python3 \
+    && make \
+    && make install \
+    && make clean \
+    && rm -rf /Python-3.7.0* \
+    && yum install -y epel-release \
+    && yum install -y python-pip
+
+# 设置默认为python3
+RUN set -ex \
+    # 备份旧版本python
+    && mv /usr/bin/python /usr/bin/python27 \
+    && mv /usr/bin/pip /usr/bin/pip-python27 \
+    # 配置默认为python3
+    && ln -s /usr/local/python3/bin/python3.7 /usr/bin/python \
+    && ln -s /usr/local/python3/bin/pip3 /usr/bin/pip
+
+# 修复因修改python版本导致yum失效问题
+RUN set -ex \
+    && sed -i "s#/usr/bin/python#/usr/bin/python27#" /usr/bin/yum \
+    && sed -i "s#/usr/bin/python#/usr/bin/python27#" /usr/libexec/urlgrabber-ext-down \
+    && yum install -y deltarpm
+
+# 基础环境配置
+RUN set -ex \
+    # 修改系统时区为东八区
+    && rm -rf /etc/localtime \
+    && ln -s /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && yum install -y vim \
+    # 安装定时任务组件
+    && yum -y install cronie
+
+# 支持中文
+RUN yum install kde-l10n-Chinese -y
+RUN localedef -c -f UTF-8 -i zh_CN zh_CN.utf8
+ENV LC_ALL zh_CN.UTF-8
+
+# 常用工具
+RUN yum install -y git \
+    && yum install -y nodejs
+    
+# 克隆项目拉取分支
+RUN git clone git地址
+RUN cd /项目路径 \
+    && git fetch -f origin 线上分支名称:本地分支名称 \
+    && git checkout 本地分支
+
+# 通过文件中的列表安装所需的包
+RUN pip install -i "https://pypi.tuna.tsinghua.edu.cn/simple" -r /项目路径/requirements.txt --timeout=60
+
+# 启动虚拟环境，并进行映射
+RUN source /虚拟环境/bin/activate \
+    && export PYTHONPATH=$(pwd)
+
+# 设置代码文件夹工作目录
+WORKDIR /项目路径
+```
+
+!> 新建的 `Dockerfile` 文件不要带有 `.txt` 等后缀名，可能会引起错误。
+
+#### 生成镜像
+
+上面Dockerfile说得很清楚，我们的程序需要一个基础镜像centos:7.6.1810，就需要执行下面命令：
 
 ```
+# 下载基础镜像
+docker pull 基础镜像名称
+docker pull centos:7.6.1810
 ```
 
-对本地的软件和环境进行打包：
+![QQ截图20211104144654](Image/QQ截图20211104144654.png)
 
+这时我们使用 `docker images` 命令查看镜像，就会看到在我们本地多了一个基础镜像：
 
+![QQ截图20211104145017](Image/QQ截图20211104145017.png)
+
+| 字段       | 描述                                                         |
+| ---------- | ------------------------------------------------------------ |
+| REPOSITORY | 来自于哪个仓库                                               |
+| TAG        | 镜像的标签信息，比如7.6.1810表示版本信息                     |
+| IMAGE ID   | 镜像的ID（唯一标识镜像），如果两个镜像的ID相同，说明它们实际上指向了同一个镜像 |
+| CREATED    | 创建时间，说明镜像最后的更新时间                             |
+| SIZE       | 镜像大小，优秀的镜像往往体积都较小                           |
+
+现在 centos:7.6.1810 的基础镜像有了，就可以使用 `docker build` 命令构建我们的程序镜像了，就是执行刚刚那个Dockerfile文件：
 
 ```
-# 文件传输
-scp loclal_file_name remote_name@ip:传输后的文件名称
-[root@110 ~]# scp base.tar root@172.19.216.195:base.tar
-docker run -it --name data_server -w /home/py_crawl/longna_distributed_reboot centos /bin/bash
-输密码
+docker build -t 镜像名字 .
+```
 
-# 查看镜像
-docker images
-# 启动镜像
-docker run -p 端口:端口 -it --name 容器名称 --net=host id号 /bin/bash
-# 查看容器
-docker ps
-# 一个镜像运行起来就是一个容器，运行多次就有多个容器
-1、删除容器
-1)首先需要停止所有的容器
-docker stop $(docker ps -a -q)
-2)删除所有的容器(只删除单个时把后面的变量改为container id即可)
-docker rm $(docker ps -a -q)
-2、删除镜像
-1)查看host中的镜像
-docker images
-2)删除指定id的镜像
-docker rmi
-想要删除untagged images，也就是那些id为的image的话可以用
-docker rmi $(docker images | grep "^" | awk "{print $3}")
-3)删除全部的images
+?> 镜像名字，随便取，别忘了命令最后有个点。
+
+该命令会去查找当前路径下的 `Dockerfile` 文件，如果没有就会报错：
+
+![QQ截图20211104110719](Image/QQ截图20211104110719.png)
+
+ `Dockerfile` 文件存在执行命令后，就会成功创建新的程序镜像：
+
+![QQ截图20211104151755](Image/QQ截图20211104151755.png)
+
+再次使用 `docker images` 命令查看镜像，就会看到在我们本地多了一个 `data_server` 程序镜像：
+
+![QQ截图20211104152335](Image/QQ截图20211104152335.png)
+
+删除镜像的命令：
+
+```
+# 删除指定镜像
+docker rmi 镜像id号
+docker rmi 镜像名称
+
+# 所有的镜像id
+docker images -q
+
+# 删除所有镜像
 docker rmi $(docker images -q)
-
-通过包管理工具安装Docker：yum install docker-io 
-
-启动Docker服务：systemctl start docker
-
-下载镜像：docker pull nginx
-
-查看镜像：docker images
-
-删除指定镜像：docker rmi nginx
-
-通过镜像创建容器：docker run -d -p 80:80 --name nginx nginx:latest
-
-查看正在运行的容器：docker ps
-
-查看所有的容器：docker container ls -a
-
-删除容器：docker rm -f nginx
-
-清空所有容器：docker container prune
-
-停止容器：docker stop nginx
-
-启动容器：docker start nginx
-
-进入容器：docker exec -it nginx /bin/bash 
-Docker - Debian - cgroup / namespace
-
-RabbitMQ - 消息服务 - Ruby
-ElasticSearch / Solr - 搜索引擎 - Java
-
-虚拟机 - 屏蔽软硬件环境的差异 - VMWare / Virtual Box
-重量级容器（占用的系统资源多）
-
-Nginx / MySQL / Redis / RabbitMQ
-
-1.安装Docker
-yum -y install docker-io
-
-2.启动Docker服务
-systemctl start docker
-
-3.查看和下载镜像（安装盘）
-docker images
-docker pull 镜像名：版本号
-
-4.创建并运行容器（每个容器就相当于是一个轻量级的虚拟机）
-docker run -d -p 外部端口：内部端口 --name 名字 镜像：版本号
-
-5.查看运行中的容器
-docker ps
-
-6.查看所有容器
-docker container ls -a
-
-7.启动和停止容器
-docker start 容器名字
-docker stop 容器名字
-
-Redis - 基于内存的KV数据库 LLOOGG.com
-Redis提供了两种持久化方法：
-	- RDB - 内存中的数据放入一个二进制的dump文件中
-	- AOF - 用一个文件记录用户操作的命令
-
-docker run -d -p 6379:6379 --name redis-master redis redis-server --appendonly yes --reqirepass
- 5335915
-
-docker run -d --name redis-slave-1 redis redis-server --link redis-master:redis-master --slaveof 6379 --masterauth 5335915 
 ```
 
-### 连接redis
+#### 操作容器
+
+镜像我们已经有了，但最后能让项目运行起来的是容器。**镜像可以理解为一个Java类，而容器可以理解为Java类的实例，一个类可以new出千千万万个实例对象。所以，镜像只是一个可以生成容器的东西，而容器才能让程序运行起来。**
+
+**创建并启动**容器命令：`docker run 参数`
+
+```
+# 启动镜像
+docker run -p 端口:端口 -it --name 容器名称 --net=host 镜像id号 /bin/bash
+
+# 后台运行并打印容器iD, 将容器的8080端口映射到主机的8081,将当前的host文件挂载到容器的/etc/hosts,已只读的方式挂载. 结束自动删除容器
+docker run -d -p 8081:8080 -v ./hosts:/etc/hosts:ro --rm playgateway 
+
+# 容器挂掉时总是重启, 容器名为platformui , 使用网络my_net, 没有会创建
+docker run --restart=always --network=my_net --name platformui  platformpcweb 
+
+# 已交互的形式 进入centos 容器,退出后,删除容器
+docker run -it --rm centos bash
+```
+
+![QQ截图20211104160133](Image/QQ截图20211104160133.png)
+
+退出容器快捷键：`Ctrl+P+Q`
+
+![QQ截图20211104160529](Image/QQ截图20211104160529.png)
+
+现在我们退出了容器，但容器仍然在运行，通过 `docker ps` 命令查看正在运行的容器：
+
+```
+# 查看正在运行的容器
+docker ps
+
+# 显示所有的容器，包括未运行的
+docker ps -a
+```
+
+![QQ截图20211104160935](Image/QQ截图20211104160935.png)
+
+我们再增加一个容器，继续熟练下面的命令：
+
+```
+# 启动容器
+docker start 容器名称
+
+# 所有的容器id
+docker ps -a -q
+
+# 停止容器
+docker stop 容器名称
+# 停止所有容器
+docker stop $(docker ps -a -q)
+
+# 删除指定容器，删除前要先停止容器
+docker rm -f 容器名称
+# 删除所有的容器，删除前要先停止所有容器
+docker rm $(docker ps -a -q)
+```
+
+![QQ截图20211104163210](Image/QQ截图20211104163210.png)
+
+#### 打包传输
+
+现在我们容器已经成功运行起来了，那如何将本机的容器拷贝到另一台机器并启动？可以按照下面步骤：
+
+使用 `docker ps` 查看自己容器的id
+
+![QQ截图20211104170449](Image/QQ截图20211104170449.png)
+
+执行命令 `docker export 容器id > 打包文件名称.tar` 
+
+![QQ截图20211104171631](Image/QQ截图20211104171631.png)
+
+执行命令 `scp /传输文件路径/文件名称 用户@目标机ip:/路径/传输后的文件名称` 传输打包文件：
+
+![QQ截图20211104172240](Image/QQ截图20211104172240.png)
+
+进入目标机的路径下，就可以看到成功传输的文件了：
+
+![QQ截图20211104172955](Image/QQ截图20211104172955.png)
 

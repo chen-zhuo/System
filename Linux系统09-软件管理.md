@@ -691,3 +691,5 @@ docker images
 ```
 # 启动镜像，创建容器
 docker run -p 端口:端口 -it --name 容器名称 --net=host 镜像id号 /bin/bash
+```
+

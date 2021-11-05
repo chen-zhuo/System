@@ -601,7 +601,7 @@ docker rmi $(docker images -q)
 **创建并启动**容器命令：`docker run 参数`
 
 ```
-# 启动镜像
+# 启动镜像，创建容器
 docker run -p 端口:端口 -it --name 容器名称 --net=host 镜像id号 /bin/bash
 
 # 后台运行并打印容器iD, 将容器的8080端口映射到主机的8081,将当前的host文件挂载到容器的/etc/hosts,已只读的方式挂载. 结束自动删除容器
@@ -662,7 +662,7 @@ docker rm $(docker ps -a -q)
 
 ![QQ截图20211104170449](Image/QQ截图20211104170449.png)
 
-执行命令 `docker export 容器id > 打包文件名称.tar` 
+**执行命令 `docker export 容器id > 打包文件名称.tar` 将容器打包成镜像文件：**
 
 ![QQ截图20211104171631](Image/QQ截图20211104171631.png)
 
@@ -674,3 +674,20 @@ docker rm $(docker ps -a -q)
 
 ![QQ截图20211104172955](Image/QQ截图20211104172955.png)
 
+接下来就是导入镜像文件（前提是本机也已经安装了Docker，并启动了Docker服务）：
+
+```
+docker import new_server.tar 镜像名称:镜像标签
+```
+
+然后通过查看镜像的命令获取镜像id号：
+
+```
+docker images
+```
+
+最后一步就是创建容器了：
+
+```
+# 启动镜像，创建容器
+docker run -p 端口:端口 -it --name 容器名称 --net=host 镜像id号 /bin/bash

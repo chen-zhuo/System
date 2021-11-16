@@ -390,32 +390,6 @@ systemctl unmask 服务名称
 
 最后是输出的日志信息。
 
-### 自定义配置
-
-```
-
-
-开启、关闭服务
-    要有控制开启、关闭服务的脚本，比如iptables（防火墙）
-    /etc/init.d/iptables start | stop | restart
-    /etc/init.d/network start | stop | restart
-    经常找脚本，太不方便了，将服务脚本放到  /etc/init.d ,如果支持服务模式，那么就可以使用如下指令开启和关闭
-    service iptables start | stop | restart
-    service network start | stop | restart
-
-    一般情况，安装服务的时候，控制服务的脚本在安装包就有，但是有的没有，比如nginx没有
-    自己按照的服务，你就可以将脚本放到  /etc/init.d 里面，然后通过service控制它的
-    开启和关闭  service nginx start
-
-自己按照的服务随开机启动
-    chkconfig nginx on   默认设置的等级为2345
-    chkconfig nginx off
-    还得给脚本权限，权限一般设置为755
-    通过chkconfig --list 查看有没有配置成功
-    netstat -lnp : 查看网络和端口使用情况
-        netstat -lnp | grep 80
-```
-
 ## 计划任务
 
 1. 在指定的时间执行命令。

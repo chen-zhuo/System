@@ -1,64 +1,65 @@
 # 网络传输
 
-## 网络配置
+## 网络流量
 
-### 网络配置工具
+### 外网IP地址
 
-网络配置工具 - **ifconfig**
+查看本机的外网IP地址 - **curl ifconfig.me**
+
+![QQ截图20211112154029](Image/QQ截图20211112154029.png)
+
+### 网络配置
+
+网络配置查看 - **ifconfig**
 
 ```
 ifconfig：查看和设置网卡信息（eth0第一网卡，eth1第二块网卡，lo回环网卡（虚拟））
 ifconfig eth0 IP地址：设置网卡eth0指定的IP地址
-setup：设置IP地址（DHCP[*]自动配置IP地址，没有DHCP服务就去掉*，重启network服务生效（service network restart），永久生效）
 ```
 
 ![QQ截图20211017223103](Image/QQ截图20211017223103.png)
 
-### 配置IP
-
-执行`ifconfig`命令，记录eth0中网卡MAC地址，即`HWaddr`的值
-
-编辑ifcfg-eth0配置文件
+第一块网卡 `ifcfg-eth0` 配置文件：`vim /etc/sysconfig/network-scripts/ifcfg-eth0 `
 
 ```
-vim /etc/sysconfig/network-scripts/ifcfg-eth0 
+DEVICE         # 设备名称
+BOOTPROTO      # 地址类型静态
+HWADDR         # HWaddr的值
+TYPE           # 网络类型
+UUID           # 唯一标识
+ONBOOT         # 是否自动加载
+NM_CONTROLLED  # NNetwork Manager托管
+IPADDR         # IP地址
+NETMASK        # 子网掩码
+GATEWAY        # 网关
 ```
 
-内容为：
+### 服务端口
 
-注意：这里设置的IP不能与虚拟网卡VirtualBox、VMnet1、VMnet8中的IP起冲突。
+查看网络服务和端口 - **netstat**
 
-```
-DEVICE=eth0                                # 设备名称eth0
-BOOTPROTO=static                           # 地址类型静态
-HWADDR=00:50:56:2D:C7:70                   # 上面记录的HWaddr的值
-TYPE=Ethernet                              # 网络类型
-UUID=a003d5b9-f6c3-456c-b475-390bdc93f734  # 唯一标识
-ONBOOT=yes                                 # 自动加载
-NM_CONTROLLED=yes                          # NNetwork Manager托管
-IPADDR=192.168.1.120                       # IP地址
-NETMASK=255.255.255.0                      # 子网掩码
-GATEWAY=192.168.1.1                        # 网关
-```
+- **-a** (all)显示所有选项，默认不显示LISTEN相关
+- **-l** - 仅列出有在 Listen (监听) 的服务状态
+- **-r** - 显示路由信息，路由表
+- **-n** - 拒绝显示别名，能显示数字的全部转化成数字
+- **-p** - 显示建立相关链接的程序名
+- **-t** -  (tcp)仅显示tcp相关选项
+- **-u** - (udp)仅显示udp相关选项
 
-退出保存后，重启network
+?> 提示：LISTEN和LISTENING的状态只有用-a或者-l才能看到
 
 ```
-service network restart
+netstat -a：列出所有端口 
+netstat -at：列出所有 tcp 端口 
+netstat -au：列出所有 udp 端口 
+netstat -an：查看所有网络连接（ESTABL LSHED连接状态，发起端口随机，目标端口固定）
+netstat -rn：查看路由表
+netstat -lnp：查看网络和端口使用情况
+netstat -lnp | grep 80：查看与80相关的端口和服务情况
+netstat -nap | grep nginx：查看与名称nginx相关的端口和服务情况
 ```
 
-## 网络检查
-
-### 端口查看
-
-显示网络相关信息 - **netstat**
-
-- **-l** - 监听
-- **-r** - 路由
-- **-n** - 显示IP地址和端口号
-- **-tuln** - 查看监听端口
-- **-an** - 查看所有网络连接（ESTABL LSHED连接状态，发起端口随机，目标端口固定）
-- **-rn** - 查看路由表
+![QQ截图20211112164404](Image/QQ截图20211112164404.png)
 
 ### 连通性检查
 
@@ -69,21 +70,23 @@ ping IP地址：测试与指定IP地址是否网络相通
 ping -c 4 IP地址：给指定的IP地址发送4个数据包
 ```
 
-显示或管理路由表 - **route**。
+![QQ截图20211112165343](Image/QQ截图20211112165343.png)
 
-查看网络服务和端口 - **netstat** / **ss**
+### 路由表
 
-```
-[root ~]# netstat -nap | grep nginx
-```
+显示或管理路由表 - **route**
+
+### 网络监听抓包
 
 网络监听抓包 - **tcpdump**
 
 ## 文件传输
 
+**记住，一个文件可以直接传输，多个文件需要先打包为一个文件再传输，这样能保证文件传输的成功率。**这就像Windows中的软件，只需要下载一个exe文件或者一个rar文件，运行后里面会有多个文件。
+
 ### 压缩解压
 
-在Linux当中常见的压缩格式：`.zip`、`.gzip`、`.tbz`。
+在Linux当中常见的压缩格式：`.zip`、`.gzip`、`.tbz`
 
 将文件或目录压缩为zip格式 - **zip 压缩后文件名称.zip 被压缩的文件或目录名称**
 
@@ -146,7 +149,7 @@ tar -jxvf test.tbz      使用bzip2方式将test.tbz文件解压缩解包
 
 - **-r** - 拷贝文件夹
 
-**scp是基于ssh协议在两台linux之间拷贝文件的命令，前提是需要知道目标主机的IP地址和用户名及其对应的用户密码。**
+**scp是基于ssh协议拷贝文件的命令，前提是需要知道目标主机的IP地址和用户名及其对应的用户密码。**
 
 ```
 格式：scp /路径/文件名称 用户@IP地址:/路径/文件名称
@@ -163,19 +166,27 @@ scp /usr/file1.txt root@172.19.216.195:/tmp/file2.txt
 
 ![QQ截图20211104172955](Image/QQ截图20211104172955.png)
 
-### 文件同步
+scp同时也可以在windows中cmd上执行，下图是已经在服务器上配置了window的密钥，不用输入密码可以直接传输文件（若传输的文件存在，则直接覆盖）：
 
-文件同步 - **rsync**
-
-使用`rsync`可以实现文件的自动同步，这个对于文件服务器来说相当重要。
+![QQ截图20211116155005](Image/QQ截图20211116155005.png)
 
 ### 安全文件传输
 
 安全文件传输 - **sftp**
 
+使用sftp首先需要登录到sftp服务器，输入下面命令会提示用户输入密码：
+
 ```
-[root ~]# sftp root@1.2.3.4root@1.2.3.4's password:Connected to 1.2.3.4.sftp>
+sftp root@ip
 ```
+
+密码通过验证出现下面的命令行就说明成功建立了sftp连接：
+
+```
+sftp>
+```
+
+sftp命令行中常用的命令：
 
 - `help`：显示帮助信息。
 - `ls`/`lls`：显示远端/本地目录列表。
@@ -186,3 +197,12 @@ scp /usr/file1.txt root@172.19.216.195:/tmp/file2.txt
 - `put`：上传文件。
 - `rm`：删除远端文件。
 - `bye`/`exit`/`quit`：退出sftp。
+
+![QQ截图20211112173230](Image/QQ截图20211112173230.png)
+
+### 文件同步
+
+文件同步 - **rsync**
+
+使用`rsync`可以实现文件的自动同步，这个对于文件服务器来说相当重要。
+

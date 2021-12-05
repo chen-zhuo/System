@@ -428,7 +428,7 @@ id_rsa : 私钥
 id_rsa.pub : 公钥
 （3）复制公钥文件内容
 （4）来到linux2中
-vi ~/.ssh/authorized_keys
+vim /root/.ssh/authorized_keys
 将公钥粘贴进来即可
 这样在通过linux1登录linux2的时候就实现了免密码登录
 ```

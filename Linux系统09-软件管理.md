@@ -594,6 +594,10 @@ docker images -q
 docker rmi $(docker images -q)
 ```
 
+这里有一点要注意的是：删除镜像的时候要保证，使用该镜像生成的容器已经停止，否则会报错。
+
+![QQ截图20211222151500](Image/QQ截图20211222151500.png)
+
 #### 操作容器
 
 镜像我们已经有了，但最后能让项目运行起来的是容器。**镜像可以理解为一个Java类，而容器可以理解为Java类的实例，一个类可以new出千千万万个实例对象。所以，镜像只是一个可以生成容器的东西，而容器才能让程序运行起来。**
@@ -638,11 +642,10 @@ docker ps -a
 # 启动容器
 docker start 容器名称
 
-# 所有的容器id
-docker ps -a -q
-
 # 停止容器
 docker stop 容器名称
+# 所有的容器id
+docker ps -a -q
 # 停止所有容器
 docker stop $(docker ps -a -q)
 

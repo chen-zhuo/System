@@ -4,6 +4,10 @@
 
 ### 外网IP地址
 
+查看本机的外网IP地址(windows、Linux通用) - **curl ip.sb**
+
+![QQ截图20220106173244](Image/QQ截图20220106173244.png)
+
 查看本机的外网IP地址 - **curl ifconfig.me**
 
 ![QQ截图20211112154029](Image/QQ截图20211112154029.png)

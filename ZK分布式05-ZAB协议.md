@@ -14,7 +14,7 @@ zookeeper协议作为非常重要的分布式协调组件，需要进行集群�
 
 **观察者（observer）：**可以接受客户端连接，将写请求转发给 leader，但是observer不参加投票的过程，只是为了扩展系统，提高读取的速度。
 
-**角色差异**：当领导者（leader）挂掉以后，跟随者（follower）会进行投票，从中所有的跟随者（follower）当中选择一位当领导者（leader），也就是每位跟随者（follower）都有可能成为领导者（leader），而观察者（observer）永远不可能成为领导者（leader）。
+**角色差异**：当领导者（leader）挂掉以后，跟随者（follower）会进行投票，从所有的跟随者（follower）当中选择一位当领导者（leader），也就是每位跟随者（follower）都有可能成为领导者（leader），而观察者（observer）永远不可能成为领导者（leader）。
 
 !> 注意：领导者（leader）有且只能有一位，且必须有；跟随者（follower）、观察者（observer）可以有多位。
 
@@ -33,7 +33,7 @@ ZAB协议给zk服务器定义了四种状态：
 - Leading：Leader节点（主节点）所处状态；
 - Observing：观察者节点所处状态；
 
-当zk服务器刚上线后，他是处于Looking状态；经过选举以后，处于Following、Leading、Observing状态中的一种
+**当zk服务器刚上线后，他是处于Looking状态；经过选举以后，处于Following、Leading、Observing状态中的一种。**
 
 ## 选举机制
 

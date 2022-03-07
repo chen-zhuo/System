@@ -443,7 +443,7 @@ Docker 是一个用go语言开发的开源的应用容器引擎，让开发者�
 
 如果某些老旧的模块与当前环境不兼容，那就麻烦了。环境配置如此麻烦，换一台机器，就要重来一次，旷日费时。很多人想到，能不能从根本上解决问题，让软件可以带环境安装，也就是说，安装的时候，把原始环境一模一样地复制过来。
 
-#### Dockerfile文件
+#### Dockerfile
 
 首先，在安装有Docker服务器中的项目根目录下新建一个 `Dockerfile` 文件，这是Docker的核心文件，常用的字段如下：
 
@@ -552,7 +552,9 @@ RUN source /虚拟环境/bin/activate \
 WORKDIR /项目路径
 ```
 
-!> 新建的 `Dockerfile` 文件不要带有 `.txt` 等后缀名，可能会引起错误。
+?> 提示：创建镜像时，我们可能会遇到 `/bin/sh: pip: command not found` 报错，但我们直接在命令行使用pip又能执行，这是因为在基础镜像中没有pip的缘故，在Dockerfile中添加 `RUN yum -y install epel-release`、`RUN yum -y install python-pip`、`pip install --upgrade pip` 这三行命令即可。
+
+!> 注意：新建的 `Dockerfile` 文件不要带有 `.txt` 等后缀名，可能会引起错误。
 
 #### 生成镜像
 

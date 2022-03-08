@@ -329,7 +329,9 @@ ln -s python3的执行文件路径 /usr/bin/python
 
 ![QQ截图20211028164932](Image/QQ截图20211028164932.png)
 
-注意当我们修改了软链接后，在使用yum命令会出现如下错误：
+!> 注意：在虚拟环境中使用 `python` 命令，是使用的虚拟环境中bin文件中的python，而非/usr/bin下的python。
+
+当我们修改了软链接后，在使用yum命令会出现如下错误：
 
 ![QQ截图20211028171813](Image/QQ截图20211028171813.png)
 
@@ -344,6 +346,8 @@ ln -s python3的执行文件路径 /usr/bin/python
 ```
 
 同样的 `/usr/libexec/urlgrabber-ext-down` 文件也会报相同的错，解决方式和上面一样。
+
+额外补充，安装好了Python后，使用 `ipython` 命令可能会报错 `bash: ipython: command not found`，那我们使用 `python -m IPython` 命令来启动，如果还报错 `No module named IPython`，那我们就安装ipython模块 `pip install ipython`，安装好后就再使用 `python -m IPython` 命令就可以启动了。
 
 ## 软件使用
 

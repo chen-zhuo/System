@@ -349,6 +349,8 @@ ln -s python3的执行文件路径 /usr/bin/python
 
 额外补充，安装好了Python后，使用 `ipython` 命令可能会报错 `bash: ipython: command not found`，那我们使用 `python -m IPython` 命令来启动，如果还报错 `No module named IPython`，那我们就安装ipython模块 `pip install ipython`，安装好后就再使用 `python -m IPython` 命令就可以启动了。
 
+![QQ截图20220324101035](Image/QQ截图20220324101035.png)
+
 ## 软件使用
 
 ### 使用Tmux

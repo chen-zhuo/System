@@ -54,9 +54,9 @@
 
 ![QQ截图20210731164636](Image/QQ截图20210731164636.png)
 
-## MobaXterm
+# Finalshell
 
-MobaXterm这个软件也是用来连接云服务器的，也很不错，安利一下！
+Finalshell这个软件也是用来连接云服务器的，也很不错，安利一下！下载地址：https://link.zhihu.com/?target=http%3A//www.hostbuf.com/downloads/finalshell_install.exe
 
 ## CMD命令行
 

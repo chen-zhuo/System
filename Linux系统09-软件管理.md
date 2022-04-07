@@ -111,7 +111,7 @@ yum install git -y
 
 Tmux是指通过一个终端登录远程主机并运行后，在其中可以开启多个控制台的终端复用软件。
 
-安装命令：`yum -c /etc/yum.conf --installroot=/usr/local/tmux --releasever=/ install tmux -y`
+这里我们使用指定安装路径的命令：`yum -c /etc/yum.conf --installroot=/usr/local/tmux --releasever=/ install tmux -y`
 
 ![QQ截图20211028173508](Image/QQ截图20211028173508.png)
 
@@ -119,13 +119,15 @@ Tmux是指通过一个终端登录远程主机并运行后，在其中可以开�
 
 ![QQ截图20211028173708](Image/QQ截图20211028173708.png)
 
-通过上面命令安装好了以后，还不能马上使用，**原因会在最下面有讲解**，还需要在/usr/bin下新建一个软链接文件指向Tmux的执行文件：
+通过上面命令安装好了以后，还不能马上使用，**原因会在下面讲解**，还需要在/usr/bin下新建一个软链接文件指向Tmux的执行文件：
 
 ```
 ln -s tmux执行文件路径 /usr/bin/tmux
 ```
 
 ![QQ截图20211028175218](Image/QQ截图20211028175218.png)
+
+?> 提示：如果执行的是 `yum install tmux -y` 命令一键安装，就不用新建软链接文件指向执行文件，可以直接使用。
 
 ### 安装Wget
 
@@ -192,7 +194,7 @@ systemctl start redis
 
 ![QQ截图20211029111727](Image/QQ截图20211029111727.png)
 
-?> 关于Redis的启动方式以及密码配置，参看《DataBase》的《[Redis02-启动、连接、配置、关闭](https://chen-zhuo.github.io/DataBase/#/Redis02-启动、连接、配置、关闭)》。
+?> 提示：关于Redis的启动方式以及密码配置，参看《DataBase》的《[Redis02-启动、连接、配置、关闭](https://chen-zhuo.github.io/DataBase/#/Redis02-启动、连接、配置、关闭)》。
 
 ### 安装Nginx
 
@@ -248,9 +250,9 @@ Nginx是一款自由的、开源的、高性能的HTTP服务器和反向代理�
 
 ![QQ截图20210904162457](Image/QQ截图20210904162457.png)
 
-?> 如果访问失败，执行命令 `systemctl stop firewalld` 关闭防火墙，再试试访问。
+?> 提示：如果访问失败，执行命令 `systemctl stop firewalld` 关闭防火墙，再试试访问。
 
-?> 一个服务器通过配置虚拟主机可以放多个网站。
+?> 提示： 一个服务器通过配置虚拟主机可以放多个网站。
 
 ### 安装Python3
 

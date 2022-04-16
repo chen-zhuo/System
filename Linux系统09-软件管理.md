@@ -542,7 +542,7 @@ ENV LC_ALL zh_CN.UTF-8
 # 常用工具
 RUN yum install -y git \
     && yum install -y nodejs
-    
+
 # 克隆项目拉取分支
 RUN git clone git地址
 RUN cd /项目路径 \
@@ -591,10 +591,15 @@ docker pull centos:7.6.1810
 现在 centos:7.6.1810 的基础镜像有了，就可以使用 `docker build` 命令构建我们的程序镜像了，就是执行刚刚那个Dockerfile文件：
 
 ```
-docker build -t 镜像名字 .
+docker build -t 镜像名字:TAG标签（默认latest） .
+
+例如：
+#!/bin/bash
+docker build --no-cache -f Dockerfile_python_env -t "base_python_env:0.1" .
+docker build --no-cache -f Dockerfile -t "data_server:0.1" .
 ```
 
-?> 镜像名字，随便取，别忘了命令最后有个点。
+?> 提示：镜像名字，随便取，别忘了命令最后有个点。
 
 该命令会去查找当前路径下的 `Dockerfile` 文件，如果没有就会报错：
 
